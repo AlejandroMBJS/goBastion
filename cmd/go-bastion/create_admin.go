@@ -9,9 +9,9 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"golang.org/x/crypto/bcrypt"
 
-	"go-native-fastapi/internal/app/models"
-	"go-native-fastapi/internal/framework/config"
-	"go-native-fastapi/internal/framework/db"
+	"github.com/AlejandroMBJS/goBastion/internal/app/models"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/config"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/db"
 )
 
 type createAdminModel struct {
