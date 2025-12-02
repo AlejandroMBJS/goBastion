@@ -12,29 +12,131 @@ import (
 )
 
 const templateRepoURL = "https://github.com/AlejandroMBJS/goBastion.git"
-const originalModuleName = "goBastion"
+const originalModuleName = "go-native-fastapi"
 const modulePrefix = "github.com/AlejandroMBJS/"
 
 func main() {
-	var projectName string
-	if len(os.Args) > 1 {
-		projectName = os.Args[1]
-	} else {
-		fmt.Print("¿Cómo quieres llamar a tu nuevo proyecto? > ")
-		reader := bufio.NewReader(os.Stdin)
-		line, err := reader.ReadString('\n')
-		if err != nil {
-			log.Fatalf("❌ Error leyendo el nombre del proyecto: %v", err)
+	if len(os.Args) < 2 {
+		printUsage()
+		os.Exit(1)
+	}
+
+	cmd := os.Args[1]
+
+	switch cmd {
+	// --------------------------------------------------
+	// Project generator commands
+	// --------------------------------------------------
+	case "new", "init":
+		var projectName string
+		if len(os.Args) >= 3 {
+			projectName = strings.TrimSpace(os.Args[2])
+		} else {
+			projectName = askProjectName()
 		}
-		projectName = strings.TrimSpace(line)
-	}
+		if projectName == "" {
+			log.Fatal("❌ El nombre del proyecto no puede estar vacío.")
+		}
+		runGenerator(projectName)
 
-	if projectName == "" {
-		log.Fatal("❌ El nombre del proyecto no puede estar vacío.")
-	}
+	// Backward compatibility:
+	// `go-bastion myapp` still creates a new project
+	case "help", "-h", "--help":
+		printUsage()
 
-	runGenerator(projectName)
+	// --------------------------------------------------
+	// Runtime / project commands (to be run inside a project)
+	// --------------------------------------------------
+	case "serve":
+		// Optional env: go-bastion serve production
+		env := ""
+		if len(os.Args) >= 3 {
+			env = os.Args[2]
+		}
+		displayConfigAndServe(env)
+
+	case "migrate":
+		runMigration()
+
+	case "seed":
+		runSeed()
+
+	case "doctor":
+		runDoctor()
+
+	case "test":
+		verbose := len(os.Args) >= 3 && (os.Args[2] == "-v" || os.Args[2] == "--verbose")
+		runTests(verbose)
+
+	case "create-admin":
+		// go-bastion create-admin <email> <password> [name]
+		if len(os.Args) < 4 {
+			log.Fatal("Uso: go-bastion create-admin <email> <password> [name]")
+		}
+		email := os.Args[2]
+		password := os.Args[3]
+		name := "Admin"
+		if len(os.Args) >= 5 {
+			name = os.Args[4]
+		}
+		runCreateAdmin(email, password, name)
+
+	case "new-module":
+		// go-bastion new-module <name>
+		if len(os.Args) < 3 {
+			log.Fatal("Uso: go-bastion new-module <module-name>")
+		}
+		moduleName := strings.TrimSpace(os.Args[2])
+		if moduleName == "" {
+			log.Fatal("El nombre del módulo no puede estar vacío.")
+		}
+		runNewModule(moduleName)
+
+	// Fallback: treat first arg as project name (generator)
+	default:
+		projectName := strings.TrimSpace(cmd)
+		if projectName == "" {
+			log.Fatal("❌ El nombre del proyecto no puede estar vacío.")
+		}
+		runGenerator(projectName)
+	}
 }
+
+// =======================
+// Helpers CLI
+// =======================
+
+func printUsage() {
+	fmt.Println("go-bastion - goBastion project & runtime CLI")
+	fmt.Println()
+	fmt.Println("Uso:")
+	fmt.Println("  go-bastion new <project-name>         Crea un nuevo proyecto (también: go-bastion <name>)")
+	fmt.Println("  go-bastion init <project-name>        Alias de new")
+	fmt.Println()
+	fmt.Println("Dentro de un proyecto goBastion:")
+	fmt.Println("  go-bastion serve [env]                Levanta el servidor (por defecto: development)")
+	fmt.Println("  go-bastion migrate                    Corre migraciones de base de datos")
+	fmt.Println("  go-bastion seed                       Seed de datos (admin por defecto, etc.)")
+	fmt.Println("  go-bastion doctor                     Health check del sistema")
+	fmt.Println("  go-bastion test [-v]                  Ejecuta go test ./...")
+	fmt.Println("  go-bastion create-admin <email> <password> [name]")
+	fmt.Println("                                        Crea un usuario admin")
+	fmt.Println("  go-bastion new-module <module-name>   Genera un módulo CRUD base")
+}
+
+func askProjectName() string {
+	fmt.Print("¿Cómo quieres llamar a tu nuevo proyecto? > ")
+	reader := bufio.NewReader(os.Stdin)
+	line, err := reader.ReadString('\n')
+	if err != nil {
+		log.Fatalf("❌ Error leyendo el nombre del proyecto: %v", err)
+	}
+	return strings.TrimSpace(line)
+}
+
+// =======================
+// Generator logic (igual que antes)
+// =======================
 
 func runGenerator(projectName string) {
 	targetDir := "./" + projectName
