@@ -6,8 +6,8 @@ import (
 	"errors"
 	"fmt"
 
-	"go-native-fastapi/internal/app/models"
-	"go-native-fastapi/internal/framework/config"
+	"github.com/AlejandroMBJS/goBastion/internal/app/models"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/config"
 
 	_ "github.com/mattn/go-sqlite3"
 	// Uncomment the driver you need:
