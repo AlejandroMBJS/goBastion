@@ -9,9 +9,9 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
-	"go-native-fastapi/internal/framework/config"
-	"go-native-fastapi/internal/framework/db"
-	"go-native-fastapi/internal/framework/view"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/config"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/db"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/view"
 )
 
 type checkResult struct {
