@@ -1,0 +1,41 @@
+# Binaries
+server
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binaries
+*.test
+*.out
+
+# Database files
+*.db
+*.db-shm
+*.db-wal
+
+# Go workspace file
+go.work
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Log files
+*.log
+
+# Temporary files
+tmp/
+temp/

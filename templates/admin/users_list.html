@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= .Title ?></title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        h1 { color: #333; font-size: 28px; margin-bottom: 10px; }
+        nav { margin-top: 15px; }
+        nav a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-right: 10px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        nav a:hover { background: #0056b3; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #007bff;
+            color: white;
+            font-weight: 600;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-admin { background: #dc3545; color: white; }
+        .badge-user { background: #28a745; color: white; }
+        .badge-active { background: #28a745; color: white; }
+        .badge-inactive { background: #6c757d; color: white; }
+        a.edit {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        a.edit:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><?= .Title ?></h1>
+            <nav>
+                <a href="/admin">Dashboard</a>
+                <a href="/admin/users">Users</a>
+            </nav>
+        </header>
+        <h2>User Management</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Staff</th>
+                    <th>Superuser</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <? range .Users ?>
+                <tr>
+                    <td><?= .ID ?></td>
+                    <td><?= .Email ?></td>
+                    <td><?= .Name ?></td>
+                    <td>
+                        <? if eq .Role "admin" ?>
+                            <span class="badge badge-admin">Admin</span>
+                        <? else ?>
+                            <span class="badge badge-user">User</span>
+                        <? end ?>
+                    </td>
+                    <td>
+                        <? if .IsActive ?>
+                            <span class="badge badge-active">Active</span>
+                        <? else ?>
+                            <span class="badge badge-inactive">Inactive</span>
+                        <? end ?>
+                    </td>
+                    <td><?= .IsStaff ?></td>
+                    <td><?= .IsSuperuser ?></td>
+                    <td>
+                        <a href="/admin/users/<?= .ID ?>" class="edit">Edit</a>
+                    </td>
+                </tr>
+                <? end ?>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

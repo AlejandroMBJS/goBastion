@@ -1,0 +1,30 @@
+{
+  "server": {
+    "port": ":8080",
+    "read_timeout_seconds": 10,
+    "write_timeout_seconds": 10,
+    "idle_timeout_seconds": 60,
+    "allowed_origins": ["http://localhost:3000"]
+  },
+  "database": {
+    "driver": "sqlite3",
+    "dsn": "file:api.db?_foreign_keys=on",
+    "max_open_conns": 10,
+    "max_idle_conns": 5,
+    "conn_max_lifetime_minutes": 30
+  },
+  "security": {
+    "enable_csrf": true,
+    "csrf_header_name": "X-CSRF-Token",
+    "csrf_cookie_name": "csrf_token",
+    "enable_jwt": true,
+    "jwt_secret": "change-me-in-prod",
+    "access_token_minutes": 15,
+    "refresh_token_minutes": 4320,
+    "max_body_bytes": 1048576
+  },
+  "rate_limit": {
+    "enabled": true,
+    "requests_per_minute": 60
+  }
+}
