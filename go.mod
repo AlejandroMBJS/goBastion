@@ -1,4 +1,4 @@
-module goBastion
+module github.com/AlejandroMBJS/goBastion
 
 go 1.24.0
 
