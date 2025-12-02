@@ -1,4 +1,4 @@
-module go-native-fastapi
+module goBastion
 
 go 1.24.0
 
