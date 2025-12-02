@@ -8,7 +8,7 @@ import (
 	"github.com/AlejandroMBJS/goBastion/internal/framework/config"
 	"github.com/AlejandroMBJS/goBastion/internal/framework/db"
 	frameworkrouter "github.com/AlejandroMBJS/goBastion/internal/framework/router"
-	"github.com/AlejandroMBJS/goBastion/framework/security"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/security"
 	"github.com/AlejandroMBJS/goBastion/internal/framework/view"
 
 	"golang.org/x/crypto/bcrypt"
