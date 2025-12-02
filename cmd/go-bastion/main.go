@@ -1,185 +1,146 @@
 package main
 
 import (
-	"flag"
+	"bufio"
 	"fmt"
+	"io/fs"
+	"log"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
-const version = "1.0.0"
+const templateRepoURL = "https://github.com/AlejandroMBJS/goBastion.git"
+const originalModuleName = "go-native-fastapi"
+const modulePrefix = "github.com/AlejandroMBJS/"
 
 func main() {
-	if len(os.Args) < 2 {
-		printHelp()
-		os.Exit(0)
-	}
-
-	command := os.Args[1]
-
-	switch command {
-	case "serve":
-		handleServe()
-	case "migrate":
-		handleMigrate()
-	case "seed":
-		handleSeed()
-	case "create-admin":
-		handleCreateAdmin()
-	case "test":
-		handleTest()
-	case "doctor":
-		handleDoctor()
-	case "new-module":
-		handleNewModule()
-	case "version", "-v", "--version":
-		fmt.Printf("go-bastion v%s\n", version)
-	case "help", "-h", "--help":
-		printHelp()
-	default:
-		fmt.Printf("Unknown command: %s\n\n", command)
-		printHelp()
-		os.Exit(1)
-	}
-}
-
-func printHelp() {
-	help := `
-╔══════════════════════════════════════════════════════════════╗
-║                       GO-BASTION CLI                         ║
-║          Production-Ready Go Web Framework Manager           ║
-╚══════════════════════════════════════════════════════════════╝
-
-USAGE:
-    go-bastion <command> [options]
-
-COMMANDS:
-    serve            Start the HTTP server
-    migrate          Run database migrations
-    seed             Insert default admin user
-    create-admin     Create a specific admin user
-    test             Run all tests (go test ./...)
-    doctor           Run health checks on the system
-    new-module       Scaffold a new API module
-    version          Show version information
-    help             Show this help message
-
-EXAMPLES:
-    go-bastion serve --port :8080
-    go-bastion migrate
-    go-bastion seed
-    go-bastion create-admin --email admin@example.com --password Secret123 --name "Admin User"
-    go-bastion test
-    go-bastion doctor
-    go-bastion new-module posts
-
-For more information on a specific command:
-    go-bastion <command> --help
-
-`
-	fmt.Print(help)
-}
-
-func handleServe() {
-	fs := flag.NewFlagSet("serve", flag.ExitOnError)
-	host := fs.String("host", "", "Host to bind to (overrides config)")
-	port := fs.String("port", "", "Port to bind to (overrides config, e.g., :8080)")
-	env := fs.String("env", "", "Environment (dev, prod)")
-
-	fs.Parse(os.Args[2:])
-
-	// Override environment variables if flags are provided
-	if *port != "" {
-		os.Setenv("APP_PORT", *port)
-	}
-	if *host != "" {
-		os.Setenv("APP_HOST", *host)
-	}
-
-	// Display configuration using Bubble Tea
-	displayConfigAndServe(*env)
-}
-
-func handleMigrate() {
-	fs := flag.NewFlagSet("migrate", flag.ExitOnError)
-	fs.Parse(os.Args[2:])
-
-	runMigration()
-}
-
-func handleSeed() {
-	fs := flag.NewFlagSet("seed", flag.ExitOnError)
-	fs.Parse(os.Args[2:])
-
-	runSeed()
-}
-
-func handleCreateAdmin() {
-	fs := flag.NewFlagSet("create-admin", flag.ExitOnError)
-	email := fs.String("email", "", "Admin email address")
-	password := fs.String("password", "", "Admin password")
-	name := fs.String("name", "Admin", "Admin name")
-
-	fs.Parse(os.Args[2:])
-
-	if *email == "" || *password == "" {
-		fmt.Println("Error: --email and --password are required")
-		fs.PrintDefaults()
-		os.Exit(1)
-	}
-
-	runCreateAdmin(*email, *password, *name)
-}
-
-func handleTest() {
-	fs := flag.NewFlagSet("test", flag.ExitOnError)
-	verbose := fs.Bool("v", false, "Verbose output")
-	fs.Parse(os.Args[2:])
-
-	runTests(*verbose)
-}
-
-func handleDoctor() {
-	fs := flag.NewFlagSet("doctor", flag.ExitOnError)
-	fs.Parse(os.Args[2:])
-
-	runDoctor()
-}
-
-func handleNewModule() {
-	if len(os.Args) < 3 {
-		fmt.Println("Error: module name is required")
-		fmt.Println("Usage: go-bastion new-module <module-name>")
-		os.Exit(1)
-	}
-
-	moduleName := os.Args[2]
-	if !isValidModuleName(moduleName) {
-		fmt.Println("Error: invalid module name. Use lowercase letters, numbers, and hyphens only")
-		os.Exit(1)
-	}
-
-	runNewModule(moduleName)
-}
-
-func isValidModuleName(name string) bool {
-	if name == "" {
-		return false
-	}
-	for _, ch := range name {
-		if !((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || ch == '-' || ch == '_') {
-			return false
+	var projectName string
+	if len(os.Args) > 1 {
+		projectName = os.Args[1]
+	} else {
+		fmt.Print("¿Cómo quieres llamar a tu nuevo proyecto? > ")
+		reader := bufio.NewReader(os.Stdin)
+		line, err := reader.ReadString('\n')
+		if err != nil {
+			log.Fatalf("❌ Error leyendo el nombre del proyecto: %v", err)
 		}
+		projectName = strings.TrimSpace(line)
 	}
-	return true
+
+	if projectName == "" {
+		log.Fatal("❌ El nombre del proyecto no puede estar vacío.")
+	}
+
+	runGenerator(projectName)
 }
 
-func pluralize(name string) string {
-	if strings.HasSuffix(name, "s") {
-		return name + "es"
+func runGenerator(projectName string) {
+	targetDir := "./" + projectName
+	fmt.Printf("⚙ Creando nuevo proyecto '%s' en %s\n", projectName, targetDir)
+
+	cloneTemplateRepo(targetDir)
+	removeGoBastionDir(targetDir)
+	removeGitDir(targetDir)
+	newModuleName := buildNewModuleName(projectName)
+	replaceModuleNameInFiles(targetDir, originalModuleName, newModuleName)
+	addReplaceDirective(targetDir, newModuleName)
+	runGoModTidy(targetDir)
+
+	fmt.Printf("✅ Proyecto creado exitosamente.\n")
+	fmt.Printf("➡ Ahora puedes entrar a la carpeta: cd %s\n", projectName)
+}
+
+func cloneTemplateRepo(targetDir string) {
+	fmt.Printf("Clonando el repositorio template en %s...\n", targetDir)
+	cmd := exec.Command("git", "clone", templateRepoURL, targetDir)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		log.Fatalf("❌ Error clonando el repositorio: %v", err)
 	}
-	if strings.HasSuffix(name, "y") {
-		return strings.TrimSuffix(name, "y") + "ies"
+}
+
+func removeGitDir(targetDir string) {
+	fmt.Println("Eliminando el directorio .git...")
+	if err := os.RemoveAll(filepath.Join(targetDir, ".git")); err != nil {
+		log.Fatalf("❌ Error eliminando el directorio .git: %v", err)
 	}
-	return name + "s"
+}
+
+func removeGoBastionDir(targetDir string) {
+	fmt.Println("Eliminando el directorio cmd/go-bastion...")
+	if err := os.RemoveAll(filepath.Join(targetDir, "cmd/go-bastion")); err != nil {
+		log.Fatalf("❌ Error eliminando el directorio cmd/go-bastion: %v", err)
+	}
+}
+
+func buildNewModuleName(projectName string) string {
+	if modulePrefix == "" {
+		return projectName
+	}
+	return modulePrefix + projectName
+}
+
+func replaceModuleNameInFiles(targetDir, oldModule, newModule string) {
+	fmt.Printf("Reemplazando el nombre del módulo '%s' por '%s'...\n", oldModule, newModule)
+	err := filepath.WalkDir(targetDir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if !d.IsDir() && shouldProcessFile(path) {
+			if err := replaceInFile(path, oldModule, newModule); err != nil {
+				log.Printf("⚠️  No se pudo reemplazar en el archivo %s: %v", path, err)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		log.Fatalf("❌ Error recorriendo los archivos: %v", err)
+	}
+}
+
+func shouldProcessFile(path string) bool {
+	return strings.HasSuffix(path, ".go") || filepath.Base(path) == "go.mod"
+}
+
+func replaceInFile(path, old, new string) error {
+	content, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+
+	newContent := strings.ReplaceAll(string(content), old, new)
+
+	if string(content) != newContent {
+		return os.WriteFile(path, []byte(newContent), 0644)
+	}
+	return nil
+}
+
+func runGoModTidy(targetDir string) {
+	fmt.Println("Ejecutando 'go mod tidy'...")
+	cmd := exec.Command("go", "mod", "tidy")
+	cmd.Dir = targetDir
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		log.Fatalf("❌ Error ejecutando 'go mod tidy': %v", err)
+	}
+}
+
+func addReplaceDirective(targetDir, newModule string) {
+	fmt.Println("Añadiendo directiva 'replace' al go.mod...")
+	goModPath := filepath.Join(targetDir, "go.mod")
+	f, err := os.OpenFile(goModPath, os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatalf("❌ Error abriendo go.mod: %v", err)
+	}
+	defer f.Close()
+
+	replaceDirective := fmt.Sprintf("\nreplace %s => .\n", newModule)
+	if _, err := f.WriteString(replaceDirective); err != nil {
+		log.Fatalf("❌ Error escribiendo en go.mod: %v", err)
+	}
 }
