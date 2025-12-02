@@ -24,31 +24,34 @@ import (
 )
 
 type configModel struct {
-	cfg      *config.Config
-	env      string
-	quitting bool
-	ready    bool
+    cfg      *config.Config
+    env      string
+    quitting bool
+    ready    bool
 }
 
 func (m configModel) Init() tea.Cmd {
-	return nil
+    return func() tea.Msg {
+        return readyMsg{}
+    }
 }
 
 func (m configModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
-		if msg.String() == "q" || msg.String() == "ctrl+c" {
-			m.quitting = true
-			return m, tea.Quit
-		}
-	case readyMsg:
-		m.ready = true
-		return m, tea.Quit
-	}
-	return m, nil
+    switch msg := msg.(type) {
+    case tea.KeyMsg:
+        if msg.String() == "q" || msg.String() == "ctrl+c" {
+            m.quitting = true
+            return m, tea.Quit
+        }
+    case readyMsg:
+        m.ready = true
+        return m, tea.Quit
+    }
+    return m, nil
 }
 
 type readyMsg struct{}
+
 
 func (m configModel) View() string {
 	if m.quitting {
