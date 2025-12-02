@@ -13,14 +13,14 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
-	"go-native-fastapi/internal/app/router"
-	"go-native-fastapi/internal/framework/admin"
-	"go-native-fastapi/internal/framework/config"
-	"go-native-fastapi/internal/framework/db"
-	"go-native-fastapi/internal/framework/docs"
-	"go-native-fastapi/internal/framework/middleware"
-	frameworkrouter "go-native-fastapi/internal/framework/router"
-	"go-native-fastapi/internal/framework/view"
+	"github.com/AlejandroMBJS/goBastion/internal/app/router"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/admin"
+	"github.com/AlejandroMBJS/goBastioni/internal/framework/config"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/db"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/docs"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/middleware"
+	frameworkrouter "github.com/AlejandroMBJS/goBastion/internal/framework/router"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/view"
 )
 
 type configModel struct {
