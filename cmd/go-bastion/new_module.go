@@ -18,7 +18,22 @@ type newModuleModel struct {
 	err        error
 	quitting   bool
 }
+// pluralize is a very small helper used by the module generator
+// to create plural table/resource names from a singular module name.
+func pluralize(name string) string {
+    n := strings.TrimSpace(name)
+    if n == "" {
+        return ""
+    }
 
+    // Super naive, but good enough for a CLI generator:
+    // "user" -> "users", "product" -> "products"
+    if strings.HasSuffix(n, "s") {
+        return n
+    }
+
+    return n + "s"
+}
 func (m newModuleModel) Init() tea.Cmd {
 	return createModuleCmd(m.moduleName)
 }
