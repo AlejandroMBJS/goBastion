@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"strconv"
 
-	"go-native-fastapi/internal/app/models"
-	"go-native-fastapi/internal/framework/db"
-	"go-native-fastapi/internal/framework/middleware"
-	frameworkrouter "go-native-fastapi/internal/framework/router"
-	"go-native-fastapi/internal/framework/view"
+	"github.com/AlejandroMBJS/goBastion/internal/app/models"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/db"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/middleware"
+	frameworkrouter "github.com/AlejandroMBJS/goBastion/internal/framework/router"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/view"
 )
 
 // RegisterRoutes registers admin routes
