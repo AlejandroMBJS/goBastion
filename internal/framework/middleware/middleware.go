@@ -12,9 +12,9 @@ import (
 	"sync"
 	"time"
 
-	"go-native-fastapi/internal/framework/config"
-	"go-native-fastapi/internal/framework/router"
-	"go-native-fastapi/internal/framework/security"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/config"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/router"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/security"
 )
 
 // Context keys for storing values
