@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"go-native-fastapi/internal/app/models"
-	"go-native-fastapi/internal/framework/config"
-	"go-native-fastapi/internal/framework/db"
-	frameworkrouter "go-native-fastapi/internal/framework/router"
-	"go-native-fastapi/internal/framework/security"
-	"go-native-fastapi/internal/framework/view"
+	"github.com/AlejandroMBJS/goBastion/internal/app/models"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/config"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/db"
+	frameworkrouter "github.com/AlejandroMBJS/goBastion/internal/framework/router"
+	"github.com/AlejandroMBJS/goBastion/framework/security"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/view"
 
 	"golang.org/x/crypto/bcrypt"
 )
