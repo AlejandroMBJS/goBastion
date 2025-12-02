@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"go-native-fastapi/internal/app/models"
-	"go-native-fastapi/internal/framework/db"
-	frameworkrouter "go-native-fastapi/internal/framework/router"
+	"github.com/AlejandroMBJS/goBastion/internal/app/models"
+	"github.com/AlejandroMBJS/goBastion/framework/db"
+	frameworkrouter "github.com/AlejandroMBJS/goBastion/internal/framework/router"
 
 	"golang.org/x/crypto/bcrypt"
 )
