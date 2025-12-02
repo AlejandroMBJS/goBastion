@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/AlejandroMBJS/goBastion/internal/app/models"
-	"github.com/AlejandroMBJS/goBastion/framework/db"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/db"
 	frameworkrouter "github.com/AlejandroMBJS/goBastion/internal/framework/router"
 
 	"golang.org/x/crypto/bcrypt"
