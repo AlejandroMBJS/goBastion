@@ -12,7 +12,7 @@ import (
 )
 
 const templateRepoURL = "https://github.com/AlejandroMBJS/goBastion.git"
-const originalModuleName = "go-native-fastapi"
+const originalModuleName = "goBastion"
 const modulePrefix = "github.com/AlejandroMBJS/"
 
 func main() {
