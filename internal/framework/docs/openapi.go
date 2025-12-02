@@ -3,7 +3,7 @@ package docs
 import (
 	"net/http"
 
-	frameworkrouter "go-native-fastapi/internal/framework/router"
+	frameworkrouter "github.com/AlejandroMBJS/goBastion/internal/framework/router"
 )
 
 // OpenAPIJSON contains the OpenAPI 3.0 specification
