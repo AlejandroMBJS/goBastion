@@ -15,7 +15,7 @@ import (
 
 	"github.com/AlejandroMBJS/goBastion/internal/app/router"
 	"github.com/AlejandroMBJS/goBastion/internal/framework/admin"
-	"github.com/AlejandroMBJS/goBastioni/internal/framework/config"
+	"github.com/AlejandroMBJS/goBastion/internal/framework/config"
 	"github.com/AlejandroMBJS/goBastion/internal/framework/db"
 	"github.com/AlejandroMBJS/goBastion/internal/framework/docs"
 	"github.com/AlejandroMBJS/goBastion/internal/framework/middleware"
