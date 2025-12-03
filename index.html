@@ -3146,6 +3146,206 @@ rows, err := db.GetDB().QueryContext(r.Context(), query, args...)
 
                         </div>
 
+                        <h5>2.1 Query Builder in Practice</h5>
+
+                        <p>
+                            The Query Builder is designed to be the <strong>primary way</strong> to talk to your
+                            database in goBastion. You can (and should) use it inside your repositories,
+                            handlers, and even in the advanced examples like the Todo module and Chat module.
+                        </p>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-lang">go</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <pre><code class="language-go">// Basic filtering & ordering
+import (
+    "net/http"
+
+    "goBastion/internal/framework/db"
+    "goBastion/internal/framework/db/qb"
+)
+
+func ListActiveUsersHandler(w http.ResponseWriter, r *http.Request) {
+    q, args := qb.New("users").
+        Select("id", "name", "email", "created_at").
+        Where("is_active = ?", true).
+        OrderBy("created_at DESC").
+        Limit(20).
+        Build()
+
+    rows, err := db.GetDB().QueryContext(r.Context(), q, args...)
+    if err != nil {
+        // handle error
+        http.Error(w, "database error", http.StatusInternalServerError)
+        return
+    }
+    defer rows.Close()
+
+    // scan rows into []models.User and render template...
+}</code></pre>
+                        </div>
+
+                        <h5>2.2 Pagination & Search</h5>
+
+                        <p>
+                            A very common pattern in the <strong>Intermediate Examples</strong> (e.g. the Todo module)
+                            is <em>"list with pagination and optional filters"</em>. The Query Builder makes that trivial:
+                        </p>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-lang">go</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <pre><code class="language-go">type TodoFilter struct {
+    UserID    int64
+    OnlyDone  bool
+    Search    string
+    Limit     int
+    Offset    int
+}
+
+func (f TodoFilter) normalize() TodoFilter {
+    if f.Limit <= 0 || f.Limit > 100 {
+        f.Limit = 20
+    }
+    if f.Offset < 0 {
+        f.Offset = 0
+    }
+    return f
+}
+
+func (r *TodoRepository) List(ctx context.Context, filter TodoFilter) ([]*models.Todo, error) {
+    filter = filter.normalize()
+
+    q := qb.New("todos").
+        Select("id", "title", "done", "created_at").
+        Where("user_id = ?", filter.UserID)
+
+    if filter.OnlyDone {
+        // additional condition: this call is appended with AND internally
+        q = q.Where("done = ?", true)
+    }
+
+    if filter.Search != "" {
+        q = q.Where("title LIKE ?", "%"+filter.Search+"%")
+    }
+
+    q = q.
+        OrderBy("created_at DESC").
+        Limit(filter.Limit).
+        Offset(filter.Offset)
+
+    sql, args := q.Build()
+
+    rows, err := db.GetDB().QueryContext(ctx, sql, args...)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var todos []*models.Todo
+    for rows.Next() {
+        var t models.Todo
+        if err := rows.Scan(&t.ID, &t.Title, &t.Done, &t.CreatedAt); err != nil {
+            return nil, err
+        }
+        todos = append(todos, &t)
+    }
+    return todos, rows.Err()
+}</code></pre>
+                        </div>
+
+                        <p>
+                            This style matches the <strong>Intermediate "Todo" example</strong>:
+                            the handler becomes very small and delegates all query logic to the repository
+                            and the Query Builder.
+                        </p>
+
+                        <h5>2.3 Joins & Advanced Queries (Chat / Admin)</h5>
+
+                        <p>
+                            In the <strong>Advanced Examples</strong> (like the real-time chat or admin dashboard),
+                            you often need to join multiple tables and apply several filters at once. The Query Builder
+                            keeps those queries readable and strongly-typed:
+                        </p>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-lang">go</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <pre><code class="language-go">// Example: last N messages in a room with author info
+func (r *ChatRepository) RecentMessages(ctx context.Context, roomID int64, limit int) ([]*models.Message, error) {
+    if limit <= 0 || limit > 100 {
+        limit = 50
+    }
+
+    q := qb.New("messages m").
+        Select(
+            "m.id",
+            "m.room_id",
+            "m.user_id",
+            "m.content",
+            "m.created_at",
+            "u.name AS user_name",
+        ).
+        Join("users u ON u.id = m.user_id").
+        Where("m.room_id = ?", roomID).
+        OrderBy("m.created_at DESC").
+        Limit(limit)
+
+    sql, args := q.Build()
+
+    rows, err := db.GetDB().QueryContext(ctx, sql, args...)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var result []*models.Message
+    for rows.Next() {
+        var m models.Message
+        if err := rows.Scan(
+            &m.ID,
+            &m.RoomID,
+            &m.UserID,
+            &m.Content,
+            &m.CreatedAt,
+            &m.UserName,
+        ); err != nil {
+            return nil, err
+        }
+        result = append(result, &m)
+    }
+
+    return result, rows.Err()
+}</code></pre>
+                        </div>
+
+                        <p>
+                            In the templates (for example, <code>chat_room.gb.html</code> or admin pages),
+                            you simply pass the result slice to the view and render with the new template syntax:
+                        </p>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-lang">html</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <pre><code class="language-html">&lt;ul class="space-y-1"&gt;
+go:: range .Messages
+  &lt;li&gt;
+    &lt;strong&gt;@.UserName:&lt;/strong&gt;
+    @.Content
+  &lt;/li&gt;
+::end
+&lt;/ul&gt;</code></pre>
+                        </div>
+
+
                     </section>
 
 
