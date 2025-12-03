@@ -1,52 +1,49 @@
 {
   "scopeName": "text.html.gobastion",
   "patterns": [
-    {
-      "include": "#gobastion-logic-start"
-    },
-    {
-      "include": "#gobastion-logic-end"
-    },
-    {
-      "include": "#gobastion-echo"
-    },
-    {
-      "include": "text.html.basic"
-    }
+    { "include": "#gobastion-logic-start" },
+    { "include": "#gobastion-end-line" },
+    { "include": "#gobastion-echo" },
+    { "include": "text.html.basic" }
   ],
   "repository": {
     "gobastion-logic-start": {
-      "begin": "^\\s*(go::)",
+      
+      "begin": "^(\\s*)(go)(::)\\s*",
       "beginCaptures": {
-        "1": {
-          "name": "keyword.control.gobastion"
-        }
+        "1": { "name": "punctuation.whitespace.leading.gobastion" },   
+        "2": { "name": "keyword.other.gobastion.tag" },                
+        "3": { "name": "punctuation.section.directive.gobastion" }     
       },
       "end": "$",
-      "name": "meta.embedded.line.go",
+      "name": "meta.embedded.line.go.gobastion",
+      "contentName": "source.go.embedded.gobastion",
       "patterns": [
         {
+         
           "include": "source.go"
         }
       ]
     },
-    "gobastion-logic-end": {
-      "match": "^\\s*(::end)\\s*$",
+
+    "gobastion-end-line": {
+      
+      "match": "^(\\s*::end\\s*)$",
       "captures": {
         "1": {
-          "name": "keyword.control.gobastion"
+          "name": "keyword.other.gobastion.blockend"
         }
       }
     },
+
     "gobastion-echo": {
-      "match": "(@)([a-zA-Z_][\\w\\.]*(\\(.*?\\))?)",
+
+      "match": "(@)(\\.?[a-zA-Z_][\\w]*)(?:\\.([a-zA-Z_][\\w]*))?(\\([^)]*\\))?",
       "captures": {
-        "1": {
-          "name": "keyword.operator.gobastion"
-        },
-        "2": {
-          "name": "variable.other.gobastion"
-        }
+        "1": { "name": "keyword.operator.gobastion.echo" },           
+        "2": { "name": "variable.other.gobastion.echo-base" },         
+        "3": { "name": "variable.other.gobastion.echo-prop" },        
+        "4": { "name": "meta.function-call.arguments.gobastion" }      
       }
     }
   }

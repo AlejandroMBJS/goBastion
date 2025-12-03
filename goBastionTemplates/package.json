@@ -3,7 +3,8 @@
   "displayName": "goBastion Templates",
   "description": "Syntax highlighting for goBastion template files (HTML + go::/@ syntax).",
   "version": "0.1.0",
-  "publisher": "gobastion",
+  "icon": "media/gb-icon.png",
+  "publisher": "AlejandroMBJS",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -25,6 +26,13 @@
     "Programming Languages"
   ],
   "contributes": {
+    "iconThemes": [
+      {
+        "id": "gobastion-icons",
+        "label": "goBastion Template Icons",
+        "path": "./themes/gobastion-icon-theme.json"
+      }
+    ],
     "languages": [
       {
         "id": "gobastion-templates",
@@ -47,9 +55,12 @@
         "scopeName": "text.html.gobastion",
         "path": "./syntaxes/gobastion.tmLanguage.json",
         "embeddedLanguages": {
-          "source.go": "go"
+          "source.go.embedded.gobastion": "go"
         }
       }
     ]
+  },
+  "dependencies": {
+    "vsce": "^2.15.0"
   }
 }

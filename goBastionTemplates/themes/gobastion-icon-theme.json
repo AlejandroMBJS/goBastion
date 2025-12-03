@@ -1,0 +1,20 @@
+{
+  "$schema": "vscode://schemas/icon-theme",
+
+  "iconDefinitions": {
+    "_file_gobastion": {
+      "iconPath": "../media/gb-icon.png"
+    }
+  },
+
+  "languageIds": {
+    "gobastion-templates": "_file_gobastion"
+  },
+
+  "fileExtensions": {
+    "gb.html": "_file_gobastion",
+    "gobastion.html": "_file_gobastion",
+    "bastion.html": "_file_gobastion",
+    "gb.tmpl": "_file_gobastion"
+  }
+}

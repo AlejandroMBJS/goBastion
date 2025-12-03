@@ -133,47 +133,6 @@ func (e *Engine) preprocess(content string) string {
 	return content
 }
 
-// handleLegacyPHPTags provides backward compatibility for old PHP-style syntax
-// This can be removed in a future version
-func (e *Engine) handleLegacyPHPTags(content string) string {
-	// Only process if PHP tags are detected
-	if !strings.Contains(content, "<?") {
-		return content
-	}
-
-	// Log deprecation warning (in production, use proper logging)
-	// fmt.Println("Warning: PHP-style template tags are deprecated. Use go:: / @ syntax instead.")
-
-	// Replace <?= expr ?> with {{ expr }}
-	re1 := regexp.MustCompile(`<\?=\s*(.*?)\s*\?>`)
-	content = re1.ReplaceAllString(content, "{{ $1 }}")
-
-	// Replace <? if expr ?> with {{ if expr }}
-	re2 := regexp.MustCompile(`<\?\s*if\s+(.*?)\s*\?>`)
-	content = re2.ReplaceAllString(content, "{{ if $1 }}")
-
-	// Replace <? range expr ?> with {{ range expr }}
-	re3 := regexp.MustCompile(`<\?\s*range\s+(.*?)\s*\?>`)
-	content = re3.ReplaceAllString(content, "{{ range $1 }}")
-
-	// Replace <? else ?> with {{ else }}
-	re4 := regexp.MustCompile(`<\?\s*else\s*\?>`)
-	content = re4.ReplaceAllString(content, "{{ else }}")
-
-	// Replace <? end ?> with {{ end }}
-	re5 := regexp.MustCompile(`<\?\s*end\s*\?>`)
-	content = re5.ReplaceAllString(content, "{{ end }}")
-
-	// Replace <? with expr ?> with {{ with expr }}
-	re6 := regexp.MustCompile(`<\?\s*with\s+(.*?)\s*\?>`)
-	content = re6.ReplaceAllString(content, "{{ with $1 }}")
-
-	// Handle comments: <? /* comment */ ?> -> {{/* comment */}}
-	re7 := regexp.MustCompile(`<\?\s*/\*(.*?)\*/\s*\?>`)
-	content = re7.ReplaceAllString(content, "{{/* $1 */}}")
-
-	return content
-}
 
 // AddFunc adds a custom template function
 func (e *Engine) AddFunc(name string, fn any) {
