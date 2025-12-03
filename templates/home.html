@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to goBastion</title>
+    <link rel="stylesheet" href="/static/css/output.css">
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        goBastion
+                    </h1>
+                    <span class="ml-3 px-3 py-1 text-xs font-semibold bg-indigo-100 text-indigo-700 rounded-full">v1.0</span>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="/docs" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors">Docs</a>
+                    <a href="/admin" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors">Admin</a>
+                    <a href="/login" class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 font-semibold transition-all shadow-md hover:shadow-lg">
+                        Sign In
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="text-center">
+            <h1 class="text-6xl font-extrabold text-gray-900 mb-6">
+                Welcome to
+                <span class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    goBastion
+                </span>
+            </h1>
+            <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                Your opinionated Go backend framework with built-in security, powerful templating, and modern tooling
+            </p>
+            <div class="flex justify-center gap-4">
+                <a href="/register" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 font-bold text-lg transition-all transform hover:-translate-y-1 shadow-xl hover:shadow-2xl">
+                    Get Started
+                    <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                    </svg>
+                </a>
+                <a href="/docs" class="inline-flex items-center px-8 py-4 bg-white text-gray-700 rounded-xl hover:bg-gray-50 font-bold text-lg transition-all border-2 border-gray-200 hover:border-indigo-300 shadow-lg">
+                    <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Documentation
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Built for Modern Web Development</h2>
+            <p class="text-lg text-gray-600">Everything you need to build secure, scalable backends</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100">
+                <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center mb-6">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Security First</h3>
+                <p class="text-gray-600 mb-4">Built-in CSRF protection, JWT authentication, rate limiting, and secure password hashing</p>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        CSRF & XSS Protection
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        JWT Token Auth
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        Rate Limiting
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100">
+                <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-6">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Custom Template Engine</h3>
+                <p class="text-gray-600 mb-4">Clean, Go-like syntax with automatic HTML escaping and powerful logic constructs</p>
+                <div class="bg-gray-50 rounded-lg p-4 font-mono text-sm">
+                    <div class="text-purple-600">go:: if user != nil {</div>
+                    <div class="text-gray-700 ml-4">&lt;p&gt;Hello @user.Name&lt;/p&gt;</div>
+                    <div class="text-purple-600">::end</div>
+                </div>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100">
+                <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center mb-6">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Database Ready</h3>
+                <p class="text-gray-600 mb-4">Built-in migrations, query builder, and support for PostgreSQL, MySQL, and SQLite</p>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        Auto Migrations
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        Query Builder
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        Connection Pooling
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100">
+                <div class="w-14 h-14 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center mb-6">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Lightning Fast</h3>
+                <p class="text-gray-600">Powered by Go's performance with minimal overhead and efficient resource usage</p>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100">
+                <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center mb-6">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">OpenAPI Docs</h3>
+                <p class="text-gray-600">Automatic API documentation with interactive Swagger UI for easy testing</p>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100">
+                <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center mb-6">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Modern CLI</h3>
+                <p class="text-gray-600">Powerful command-line tools for migrations, seeding, module generation, and more</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Start Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded-3xl p-12 shadow-2xl">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-white mb-4">Get Started in Seconds</h2>
+                <p class="text-indigo-100 text-lg">Start building your next project with goBastion</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                    <div class="text-white font-mono text-sm mb-3">
+                        <div class="text-indigo-200 mb-1">$ go install goBastion</div>
+                        <div class="text-indigo-200">$ go-bastion init myapp</div>
+                    </div>
+                    <p class="text-white/80 text-sm">Install and initialize your project</p>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                    <div class="text-white font-mono text-sm mb-3">
+                        <div class="text-indigo-200 mb-1">$ cd myapp</div>
+                        <div class="text-indigo-200">$ go-bastion serve</div>
+                    </div>
+                    <p class="text-white/80 text-sm">Start the development server</p>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                    <div class="text-white font-mono text-sm mb-3">
+                        <div class="text-indigo-200 mb-1">$ go-bastion migrate</div>
+                        <div class="text-indigo-200">$ go-bastion create-admin</div>
+                    </div>
+                    <p class="text-white/80 text-sm">Run migrations and create admin user</p>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a href="/register" class="inline-flex items-center px-8 py-4 bg-white text-indigo-600 rounded-xl hover:bg-gray-50 font-bold text-lg transition-all transform hover:-translate-y-1 shadow-xl">
+                    Start Building Now
+                    <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">goBastion</h3>
+                    <p class="text-gray-600 text-sm">Your opinionated Go backend framework</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-4">Resources</h4>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><a href="/docs" class="hover:text-indigo-600">Documentation</a></li>
+                        <li><a href="/docs" class="hover:text-indigo-600">API Reference</a></li>
+                        <li><a href="/docs" class="hover:text-indigo-600">Examples</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-4">Community</h4>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><a href="#" class="hover:text-indigo-600">GitHub</a></li>
+                        <li><a href="#" class="hover:text-indigo-600">Discord</a></li>
+                        <li><a href="#" class="hover:text-indigo-600">Twitter</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-4">Legal</h4>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><a href="#" class="hover:text-indigo-600">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-indigo-600">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-indigo-600">License</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-gray-600">
+                © 2025 goBastion. Built with ❤️ using Go.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,16 @@
+go:: range .Messages
+<div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-white/5 transition-colors">
+    <div class="flex-shrink-0">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm">
+            @.User[:1]
+        </div>
+    </div>
+    <div class="flex-1 min-w-0">
+        <div class="flex items-baseline space-x-2">
+            <span class="font-semibold text-purple-300 text-sm">@.User</span>
+            <span class="text-xs text-gray-500">@.Timestamp.Format("15:04")</span>
+        </div>
+        <p class="text-white mt-1 text-sm">@.Content</p>
+    </div>
+</div>
+::end

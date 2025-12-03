@@ -1,0 +1,55 @@
+{
+  "name": "gobastion-templates",
+  "displayName": "goBastion Templates",
+  "description": "Syntax highlighting for goBastion template files (HTML + go::/@ syntax).",
+  "version": "0.1.0",
+  "publisher": "gobastion",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlejandroMBJS/goBastion.git"
+  },
+  "keywords": [
+    "gobastion",
+    "go",
+    "template",
+    "syntax",
+    "html",
+    "web",
+    "framework"
+  ],
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "gobastion-templates",
+        "aliases": [
+          "goBastion Templates",
+          "goBastion"
+        ],
+        "extensions": [
+          ".gb.html",
+          ".gobastion.html",
+          ".bastion.html",
+          ".gb.tmpl"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "gobastion-templates",
+        "scopeName": "text.html.gobastion",
+        "path": "./syntaxes/gobastion.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.go": "go"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>goBastion Demo</title>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-50 flex items-center justify-center">
+  <main class="max-w-2xl mx-auto p-8 rounded-2xl bg-slate-900 border border-slate-800 shadow-lg">
+    <h1 class="text-3xl font-bold mb-2">Welcome to goBastion</h1>
+    <p class="text-slate-300 mb-4">
+      Hello @user.Name! This is a goBastion template with <code>go::</code> and <code>@</code> syntax.
+    </p>
+
+    go:: if len(notifications) > 0 {
+      <section class="mt-6">
+        <h2 class="text-xl font-semibold mb-2">Notifications (@len(notifications))</h2>
+        <ul class="space-y-1 text-sm text-slate-200">
+          go:: for _, n := range notifications {
+            <li>• @n.Message</li>
+          ::end
+        </ul>
+      </section>
+    ::end
+  </main>
+</body>
+</html>

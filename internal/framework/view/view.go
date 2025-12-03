@@ -95,8 +95,55 @@ func (e *Engine) RenderString(name string, data any) (string, error) {
 	return buf.String(), nil
 }
 
-// preprocess converts PHP-like syntax to Go template syntax
+// preprocess converts goBastion-specific syntax to Go template syntax
+// Supports two main constructs:
+// 1. go:: ... ::end - Logic blocks (if, for, range, with, etc.)
+// 2. @expr - Echo expressions (HTML-escaped output)
 func (e *Engine) preprocess(content string) string {
+	// First handle backward compatibility with PHP-style tags (deprecated)
+	content = e.handleLegacyPHPTags(content)
+
+	// Process @expr echo expressions FIRST
+	// This ensures they work both inside and outside logic blocks
+	// Matches: @identifier or @func(args) or @obj.field
+	// This regex handles:
+	// - @variable
+	// - @.field (dot notation for current context)
+	// - @object.field
+	// - @object.method()
+	// - @func(args)
+	echoRegex := regexp.MustCompile(`@([a-zA-Z_.][a-zA-Z0-9_.]*(?:\([^)]*\))?)`)
+	content = echoRegex.ReplaceAllStringFunc(content, func(match string) string {
+		// Extract the expression (remove @)
+		expr := match[1:]
+		return "{{ " + expr + " }}"
+	})
+
+	// Process go:: logic blocks AFTER echo expressions
+	// Matches: go:: <statement>
+	// Example: go:: if user != nil {
+	goBlockRegex := regexp.MustCompile(`(?m)^[ \t]*go::\s*(.+?)[ \t]*$`)
+	content = goBlockRegex.ReplaceAllString(content, "{{ $1 }}")
+
+	// Process ::end tags
+	// Matches: ::end
+	endBlockRegex := regexp.MustCompile(`(?m)^[ \t]*::end[ \t]*$`)
+	content = endBlockRegex.ReplaceAllString(content, "{{ end }}")
+
+	return content
+}
+
+// handleLegacyPHPTags provides backward compatibility for old PHP-style syntax
+// This can be removed in a future version
+func (e *Engine) handleLegacyPHPTags(content string) string {
+	// Only process if PHP tags are detected
+	if !strings.Contains(content, "<?") {
+		return content
+	}
+
+	// Log deprecation warning (in production, use proper logging)
+	// fmt.Println("Warning: PHP-style template tags are deprecated. Use go:: / @ syntax instead.")
+
 	// Replace <?= expr ?> with {{ expr }}
 	re1 := regexp.MustCompile(`<\?=\s*(.*?)\s*\?>`)
 	content = re1.ReplaceAllString(content, "{{ $1 }}")

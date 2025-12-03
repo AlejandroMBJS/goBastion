@@ -1,0 +1,53 @@
+{
+  "scopeName": "text.html.gobastion",
+  "patterns": [
+    {
+      "include": "#gobastion-logic-start"
+    },
+    {
+      "include": "#gobastion-logic-end"
+    },
+    {
+      "include": "#gobastion-echo"
+    },
+    {
+      "include": "text.html.basic"
+    }
+  ],
+  "repository": {
+    "gobastion-logic-start": {
+      "begin": "^\\s*(go::)",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.gobastion"
+        }
+      },
+      "end": "$",
+      "name": "meta.embedded.line.go",
+      "patterns": [
+        {
+          "include": "source.go"
+        }
+      ]
+    },
+    "gobastion-logic-end": {
+      "match": "^\\s*(::end)\\s*$",
+      "captures": {
+        "1": {
+          "name": "keyword.control.gobastion"
+        }
+      }
+    },
+    "gobastion-echo": {
+      "match": "(@)([a-zA-Z_][\\w\\.]*(\\(.*?\\))?)",
+      "captures": {
+        "1": {
+          "name": "keyword.operator.gobastion"
+        },
+        "2": {
+          "name": "variable.other.gobastion"
+        }
+      }
+    }
+  }
+}

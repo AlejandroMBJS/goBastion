@@ -1649,6 +1649,11 @@ r.Handle("GET", "/admin/dashboard", jwtMiddleware(requireAdmin(handleAdminDashbo
                             <li><strong>Security:</strong> All output using the <code>&lt;?= ... ?&gt;</code> tag is automatically HTML-escaped to prevent XSS attacks.</li>
                             <li><strong>Layouts and Partials:</strong> You can include partial templates within others using <code>&lt;? include "path/to/partial.html" .Data ?&gt;</code>, allowing for reusable components and layouts.</li>
                         </ul>
+                        <h3>Modern goBastion Template Syntax ✨</h3>
+                        <div class="callout tip">
+                            <p><strong>🎉 New:</strong> The template engine now uses a clean, Go-like syntax with only two constructs: <code>go:: ... ::end</code> for logic blocks and <code>@expr</code> for output!</p>
+                        </div>
+                        <p>For complete documentation on the new syntax, see <a href="TEMPLATE_SYNTAX.md" target="_blank">TEMPLATE_SYNTAX.md</a>.</p>
                         <h3>Rendering a Template</h3>
                         <p>In your handler, you use the <code>view.Render</code> function to render a template and pass data to it.</p>
                         <div class="code-block">
@@ -1697,7 +1702,403 @@ func handleAdminDashboard(w http.ResponseWriter, r *http.Request, params map[str
 </code></pre>
                         </div>
                     </section>
+
+                    <section id="editor-support">
+                        <h2>🎨 Editor Support</h2>
+                        <p>Get syntax highlighting for goBastion templates in your favorite editor!</p>
+
+                        <h3>Vim/Neovim (using <code>gBCode</code>)</h3>
+                        <p>Install syntax highlighting with our pre-built binary installer:</p>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-lang">bash</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <pre><code class="language-bash"># Build the installer
+go build -o gBCode ./cmd/gobastion-vim-installer/
+
+# Run the installer
+./gBCode
+
+# Or build and run in one step
+go run ./cmd/gobastion-vim-installer/</code></pre>
+                        </div>
+
+                        <div class="callout tip">
+                            <p><strong>✨ Auto-Detection:</strong> The <code>gBCode</code> installer automatically detects your Vim/Neovim installation and installs syntax files to the correct location!</p>
+                        </div>
+
+                        <p><strong>The installer provides:</strong></p>
+                        <ul>
+                            <li>✅ Auto-detect your Vim/Neovim installation</li>
+                            <li>✅ Install syntax files to the correct location</li>
+                            <li>✅ Support <code>.gb.html</code>, <code>.gobastion.html</code>, <code>.bastion.html</code>, and <code>.gb.tmpl</code> files</li>
+                            <li>✅ Syntax highlighting for <code>go::</code>, <code>::end</code>, and <code>@</code> expressions</li>
+                            <li>✅ Embedded Go syntax in logic blocks</li>
+                        </ul>
+
+                        <p><strong>Manual installation</strong> (alternative):</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-lang">bash</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <pre><code class="language-bash"># For Neovim/LazyVim users
+cd goBastionTemplates
+./gBTemplatesNvim.sh</code></pre>
+                        </div>
+
+                        <p>📖 See <a href="cmd/gobastion-vim-installer/README.md" target="_blank">Full Vim/Neovim Guide</a> for detailed instructions.</p>
+
+                        <h3>VS Code (using <code>.vsix</code> extension)</h3>
+                        <p>Install the pre-packaged VS Code extension:</p>
+
+                        <div class="callout info">
+                            <p><strong>📦 Pre-built Extension:</strong> A <code>.vsix</code> file is already included at <code>goBastionTemplates/gobastion-templates-0.1.0.vsix</code>!</p>
+                        </div>
+
+                        <p><strong>Option 1: Install from Pre-built VSIX</strong></p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-lang">bash</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <pre><code class="language-bash"># Command line installation
+code --install-extension goBastionTemplates/gobastion-templates-0.1.0.vsix</code></pre>
+                        </div>
+
+                        <p><strong>Or via VS Code UI:</strong></p>
+                        <ol>
+                            <li>Open VS Code</li>
+                            <li>Press <code>Ctrl+Shift+P</code> (or <code>Cmd+Shift+P</code> on macOS)</li>
+                            <li>Type "Extensions: Install from VSIX..."</li>
+                            <li>Select <code>goBastionTemplates/gobastion-templates-0.1.0.vsix</code></li>
+                            <li>Reload VS Code</li>
+                        </ol>
+
+                        <p><strong>Option 2: Build from Source</strong></p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-lang">bash</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <pre><code class="language-bash"># Install vsce (if not already installed)
+npm install -g @vscode/vsce
+
+# Package the extension
+cd goBastionTemplates
+vsce package
+
+# Install the generated .vsix file
+code --install-extension gobastion-templates-0.1.0.vsix</code></pre>
+                        </div>
+
+                        <p><strong>Extension Features:</strong></p>
+                        <ul>
+                            <li>✅ Syntax highlighting for all goBastion constructs</li>
+                            <li>✅ Auto-closing pairs for brackets and tags</li>
+                            <li>✅ Embedded Go syntax in logic blocks</li>
+                            <li>✅ Support for <code>.gb.html</code>, <code>.gobastion.html</code>, <code>.bastion.html</code>, and <code>.gb.tmpl</code></li>
+                        </ul>
+
+                        <p>📖 See <a href="goBastionTemplates/README.md" target="_blank">Full VS Code Extension Guide</a> for more details.</p>
+
+                        <h3>Supported File Extensions</h3>
+                        <p>Both editors support these file extensions:</p>
+                        <ul>
+                            <li><code>*.gb.html</code> - Primary goBastion template extension (recommended)</li>
+                            <li><code>*.gobastion.html</code> - Alternative extension</li>
+                            <li><code>*.bastion.html</code> - Alternative extension</li>
+                            <li><code>*.gb.tmpl</code> - Template extension</li>
+                        </ul>
+
+                        <div class="callout success">
+                            <p><strong>🎉 Ready to Go!</strong> After installing editor support, restart your editor and open any <code>.gb.html</code> file to enjoy full syntax highlighting!</p>
+                        </div>
+                    </section>
 
+
+                    <section id="advanced-examples">
+                        <h2>🚀 Advanced Examples</h2>
+                        <p>goBastion includes production-ready examples demonstrating senior-level Go patterns and modern web technologies.</p>
+
+                        <h3>Real-Time Chat Application</h3>
+                        <p>A complete real-time chat demonstrating advanced Go concurrency and HTMX integration.</p>
+
+                        <div class="callout info">
+                            <p><strong>🎯 Features:</strong></p>
+                            <ul>
+                                <li>Real-time messaging using Server-Sent Events (SSE)</li>
+                                <li>Concurrent message broker with Go channels and goroutines</li>
+                                <li>HTMX integration for reactive UI without JavaScript frameworks</li>
+                                <li>Thread-safe operations using mutexes</li>
+                                <li>Multiple chat rooms with message history</li>
+                                <li>Live statistics with automatic updates</li>
+                            </ul>
+                        </div>
+
+                        <p><strong>Try it:</strong></p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-lang">bash</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <pre><code class="language-bash">go run ./cmd/server/ serve
+# Visit: http://localhost:8080/chat</code></pre>
+                        </div>
+
+                        <h4>Go Patterns Demonstrated</h4>
+
+                        <p><strong>1. Concurrent Message Broker</strong></p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-lang">go</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <pre><code class="language-go">type Broker struct {
+    clients    map[string]*Client
+    mu         sync.RWMutex
+    register   chan *Client
+    unregister chan *Client
+    broadcast  chan Message
+    ctx        context.Context
+    cancel     context.CancelFunc
+}
+
+func (b *Broker) Start() {
+    go func() {
+        for {
+            select {
+            case client := &lt;-b.register:
+                b.registerClient(client)
+            case client := &lt;-b.unregister:
+                b.unregisterClient(client)
+            case message := &lt;-b.broadcast:
+                b.broadcastMessage(message)
+            case &lt;-b.ctx.Done():
+                return
+            }
+        }
+    }()
+}</code></pre>
+                        </div>
+
+                        <p><strong>2. SSE (Server-Sent Events) Streaming</strong></p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-lang">go</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <pre><code class="language-go">func handleChatStream(w http.ResponseWriter, r *http.Request, params map[string]string) {
+    // Set SSE headers
+    w.Header().Set("Content-Type", "text/event-stream")
+    w.Header().Set("Cache-Control", "no-cache")
+    w.Header().Set("Connection", "keep-alive")
+
+    client := &amp;chat.Client{
+        ID:       uuid.New().String(),
+        Messages: make(chan chat.Message, 10),
+        RoomID:   roomID,
+    }
+
+    messageBroker.Register(client)
+    defer messageBroker.Unregister(client)
+
+    flusher := w.(http.Flusher)
+
+    for {
+        select {
+        case msg := &lt;-client.Messages:
+            data, _ := json.Marshal(msg)
+            fmt.Fprintf(w, "data: %s\n\n", data)
+            flusher.Flush()
+        case &lt;-r.Context().Done():
+            return
+        }
+    }
+}</code></pre>
+                        </div>
+
+                        <p><strong>3. HTMX Integration</strong></p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-lang">html</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <pre><code class="language-html">&lt;!-- Real-time message streaming --&gt;
+&lt;div id="chat-messages"
+     hx-ext="sse"
+     sse-connect="/chat/general/stream"
+     sse-swap="message"
+     hx-swap="beforeend"&gt;
+&lt;/div&gt;
+
+&lt;!-- Send message without page reload --&gt;
+&lt;form hx-post="/chat/general/send"
+      hx-trigger="submit"
+      hx-swap="none"&gt;
+    &lt;input name="message" placeholder="Type message..."&gt;
+    &lt;button type="submit"&gt;Send&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+                        </div>
+
+                        <h4>Worker Pool Pattern</h4>
+                        <p>Background job processing with concurrent workers:</p>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-lang">go</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <pre><code class="language-go">func ProcessJobsWithWorkerPool(jobs []Job, numWorkers int) []Result {
+    jobChan := make(chan Job, len(jobs))
+    resultChan := make(chan Result, len(jobs))
+
+    // Start workers (fan-out)
+    for i := 0; i < numWorkers; i++ {
+        go worker(ctx, i, jobChan, resultChan)
+    }
+
+    // Send jobs to workers
+    for _, job := range jobs {
+        jobChan <- job
+    }
+    close(jobChan)
+
+    // Collect results (fan-in)
+    results := make([]Result, 0, len(jobs))
+    for i := 0; i < len(jobs); i++ {
+        result := &lt;-resultChan
+        results = append(results, result)
+    }
+
+    return results
+}
+
+func worker(ctx context.Context, id int, jobs &lt;-chan Job, results chan&lt;- Result) {
+    for job := range jobs {
+        select {
+        case &lt;-ctx.Done():
+            return
+        default:
+            result := processJob(job)
+            results &lt;- result
+        }
+    }
+}</code></pre>
+                        </div>
+
+                        <h4>Rate Limiter (Token Bucket)</h4>
+                        <p>Custom rate limiter implementation using channels:</p>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-lang">go</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <pre><code class="language-go">type RateLimiter struct {
+    tokens         chan struct{}
+    maxTokens      int
+    refillInterval time.Duration
+    ctx            context.Context
+    cancel         context.CancelFunc
+}
+
+func NewRateLimiter(maxTokens int, refillInterval time.Duration) *RateLimiter {
+    ctx, cancel := context.WithCancel(context.Background())
+    rl := &amp;RateLimiter{
+        tokens:         make(chan struct{}, maxTokens),
+        maxTokens:      maxTokens,
+        refillInterval: refillInterval,
+        ctx:            ctx,
+        cancel:         cancel,
+    }
+
+    // Fill initial tokens
+    for i := 0; i &lt; maxTokens; i++ {
+        rl.tokens &lt;- struct{}{}
+    }
+
+    // Start refill goroutine
+    go rl.refill()
+
+    return rl
+}
+
+func (rl *RateLimiter) Allow() bool {
+    select {
+    case &lt;-rl.tokens:
+        return true
+    default:
+        return false
+    }
+}
+
+func (rl *RateLimiter) Wait(ctx context.Context) error {
+    select {
+    case &lt;-rl.tokens:
+        return nil
+    case &lt;-ctx.Done():
+        return ctx.Err()
+    }
+}</code></pre>
+                        </div>
+
+                        <h4>Files Structure</h4>
+                        <div class="overflow-x-auto">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>File</th>
+                                        <th>Description</th>
+                                        <th>Patterns Used</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>internal/app/chat/broker.go</code></td>
+                                        <td>Concurrent message broker</td>
+                                        <td>Channels, Goroutines, Mutex, Context</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>internal/app/router/chat.go</code></td>
+                                        <td>HTTP handlers with SSE</td>
+                                        <td>SSE, Worker Pools, Rate Limiting</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>templates/chat/room.html</code></td>
+                                        <td>Chat UI with HTMX</td>
+                                        <td>HTMX, SSE Extension, goBastion Templates</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>templates/chat/messages.html</code></td>
+                                        <td>Message partial template</td>
+                                        <td>goBastion <code>go::</code> / <code>@</code> syntax</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h4>Patterns Summary</h4>
+                        <div class="callout success">
+                            <p><strong>Advanced Go Patterns Used:</strong></p>
+                            <ul>
+                                <li>✅ <strong>Goroutines &amp; Channels</strong> - Concurrent message passing</li>
+                                <li>✅ <strong>sync.RWMutex</strong> - Thread-safe map operations</li>
+                                <li>✅ <strong>Context</strong> - Cancellation &amp; timeouts</li>
+                                <li>✅ <strong>Select Statement</strong> - Multiplexing channels</li>
+                                <li>✅ <strong>Worker Pools</strong> - Parallel job processing</li>
+                                <li>✅ <strong>Token Bucket</strong> - Rate limiting</li>
+                                <li>✅ <strong>SSE</strong> - Real-time server push</li>
+                                <li>✅ <strong>HTMX</strong> - Modern reactive UI</li>
+                            </ul>
+                        </div>
+
+                        <div class="callout tip">
+                            <p><strong>📚 Learn More:</strong> See the complete implementation in <code>internal/app/chat/</code> and <code>internal/app/router/chat.go</code>.</p>
+                        </div>
+                    </section>
                     <section id="cli-reference">
                         <h2>CLI Reference</h2>
                         <p>The generated application comes with a powerful command-line interface, dispatched from <code>go run ./cmd/server/main.go</code>. It's used for development, database management, and other utilities.</p>

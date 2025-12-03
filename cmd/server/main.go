@@ -74,6 +74,10 @@ func main() {
 		log.Println("JWT authentication enabled")
 	}
 
+	// Register home route
+	log.Println("Registering home route...")
+	router.RegisterHomeRoutes(r, tmplEngine)
+
 	// Register application routes
 	log.Println("Registering application routes...")
 	router.RegisterAuthRoutes(r, cfg.Security)
@@ -86,6 +90,13 @@ func main() {
 	// Register admin routes
 	log.Println("Registering admin routes...")
 	admin.RegisterRoutes(r, tmplEngine)
+
+	// Initialize and register chat routes (advanced example with SSE + HTMX)
+	log.Println("Initializing chat broker...")
+	ctx := context.Background()
+	router.InitChatBroker(ctx)
+	log.Println("Registering chat routes...")
+	router.RegisterChatRoutes(r, tmplEngine)
 
 	// Register documentation routes
 	log.Println("Registering documentation routes...")

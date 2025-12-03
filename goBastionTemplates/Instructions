@@ -1,0 +1,36 @@
+goBastion Templates Extension
+
+Provides syntax highlighting for goBastion templates.
+
+Features
+
+Highlights go:: logic lines (embedding Go syntax).
+
+Highlights ::end closing tags.
+
+Highlights @variable and @expression(...) echoes.
+
+Full HTML support as the base language.
+
+Development & Installation
+
+1. Run in Debug Mode
+
+Open this folder in VS Code.
+
+Press F5 to launch a new Extension Development Host window.
+
+Open the examples/home.gb.html file to test.
+
+2. Package & Install (.vsix)
+
+Prerequisite: Install vsce (npm install -g @vscode/vsce).
+
+Run:
+
+vsce package
+
+
+This generates a .vsix file.
+
+Install via command palette: Extensions: Install from VSIX...
