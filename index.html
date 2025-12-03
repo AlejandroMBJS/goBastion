@@ -3282,12 +3282,307 @@ r.Handle("GET", "/admin/dashboard", jwtMiddleware(requireAdmin(handleAdminDashbo
 
                         </ul>
 
-                        <h3>Modern goBastion Template Syntax ✨</h3>
-                        <div class="callout tip">
-                            <p><strong>🎉 New:</strong> The template engine now uses a clean, Go-like syntax with only two constructs: <code>go:: ... ::end</code> for logic blocks and <code>@expr</code> for output!</p>
-                        </div>
-                        <p>For complete documentation on the new syntax, see <a href="TEMPLATE_SYNTAX.md" target="_blank">TEMPLATE_SYNTAX.md</a>.</p>
-                        <h3>Rendering a Template</h3>
+                        <h3>goBastion Template Syntax</h3>
+<p>goBastion uses a custom template engine built on top of Go's <code>html/template</code> package. The engine provides a clean, intuitive syntax while maintaining all the security benefits of Go templates, including automatic HTML escaping.</p>
+<h3>Overview</h3>
+<p>Templates are typically stored in files with the <code>.gb.html</code> extension (for example <code>home.gb.html</code>).</p>
+<p>The goBastion template syntax uses <strong>only two constructs</strong>:</p>
+<ol>
+<li><strong>Logic Blocks</strong> (<code>go:: ... ::end</code>) - For control flow and logic</li>
+<li><strong>Echo Expressions</strong> (<code>@expr</code>) - For outputting values</li>
+</ol>
+<p>This minimal, expressive syntax keeps templates clean and readable while providing all the power you need.</p>
+<hr/>
+<h3>Echo Expressions</h3>
+<p>Echo expressions output values with automatic HTML escaping.</p>
+<h4>Syntax</h4>
+<pre><code class="language-html">@expression</code></pre>
+<h4>Examples</h4>
+<p><strong>Simple variable:</strong></p>
+<pre><code class="language-html">&lt;h1&gt;@.Title&lt;/h1&gt;</code></pre>
+<p><strong>Object property:</strong></p>
+<pre><code class="language-html">&lt;p&gt;Hello, @user.Name!&lt;/p&gt;
+&lt;p&gt;Email: @user.Email&lt;/p&gt;</code></pre>
+<p><strong>Nested properties:</strong></p>
+<pre><code class="language-html">&lt;img src=&quot;@user.Profile.Avatar&quot; alt=&quot;Avatar&quot;&gt;</code></pre>
+<p><strong>Function calls:</strong></p>
+<pre><code class="language-html">&lt;p&gt;Price: @formatPrice(product.Price)&lt;/p&gt;
+&lt;p&gt;@upper(.Title)&lt;/p&gt;</code></pre>
+<h4>HTML Escaping</h4>
+<p>All echo expressions are <strong>automatically HTML-escaped</strong> for security:</p>
+<pre><code class="language-html">@userInput
+&lt;!-- If userInput contains: &lt;script&gt;alert(&#x27;xss&#x27;)&lt;/script&gt; --&gt;
+&lt;!-- Output: &amp;lt;script&amp;gt;alert(&amp;#39;xss&amp;#39;)&amp;lt;/script&amp;gt; --&gt;</code></pre>
+<p>This prevents XSS (Cross-Site Scripting) attacks by default.</p>
+<hr/>
+<h3>Logic Blocks</h3>
+<p>Logic blocks control template flow using real Go code.</p>
+<h4>Syntax</h4>
+<pre><code class="language-html">go:: &lt;go-statement&gt;
+  &lt;!-- template content --&gt;
+::end</code></pre>
+<h4>If Statements</h4>
+<p><strong>Basic if:</strong></p>
+<pre><code class="language-html">go:: if .User
+  &lt;p&gt;Welcome, @.User.Name!&lt;/p&gt;
+::end</code></pre>
+<p><strong>If/else:</strong></p>
+<pre><code class="language-html">go:: if .Error
+  &lt;div class=&quot;error&quot;&gt;@.Error&lt;/div&gt;
+go:: else
+  &lt;div class=&quot;success&quot;&gt;Operation successful!&lt;/div&gt;
+::end</code></pre>
+<p><strong>If with comparison:</strong></p>
+<pre><code class="language-html">go:: if eq .Role &quot;admin&quot;
+  &lt;a href=&quot;/admin&quot;&gt;Admin Panel&lt;/a&gt;
+::end</code></pre>
+<h4>Range Loops</h4>
+<p><strong>Iterate over a slice:</strong></p>
+<pre><code class="language-html">&lt;ul&gt;
+go:: range .Items
+  &lt;li&gt;@.Name - $@.Price&lt;/li&gt;
+::end
+&lt;/ul&gt;</code></pre>
+<p><strong>Range with index and value:</strong></p>
+<pre><code class="language-html">&lt;ol&gt;
+go:: range $index, $item := .Items
+  &lt;li&gt;Item #@$index: @$item.Name&lt;/li&gt;
+::end
+&lt;/ol&gt;</code></pre>
+<p><strong>Empty list handling:</strong></p>
+<pre><code class="language-html">go:: if .Users
+&lt;table&gt;
+go:: range .Users
+  &lt;tr&gt;
+    &lt;td&gt;@.ID&lt;/td&gt;
+    &lt;td&gt;@.Name&lt;/td&gt;
+    &lt;td&gt;@.Email&lt;/td&gt;
+  &lt;/tr&gt;
+::end
+&lt;/table&gt;
+go:: else
+&lt;p&gt;No users found.&lt;/p&gt;
+::end</code></pre>
+<h4>With Blocks</h4>
+<p>Set the context to a specific value:</p>
+<pre><code class="language-html">go:: with .User
+  &lt;h2&gt;@.Name&lt;/h2&gt;
+  &lt;p&gt;@.Email&lt;/p&gt;
+  &lt;p&gt;Role: @.Role&lt;/p&gt;
+::end</code></pre>
+<h4>Nested Blocks</h4>
+<p>You can nest blocks as deeply as needed:</p>
+<pre><code class="language-html">go:: if .Posts
+&lt;div class=&quot;posts&quot;&gt;
+  go:: range .Posts
+  &lt;article&gt;
+    &lt;h2&gt;@.Title&lt;/h2&gt;
+    &lt;p&gt;@.Content&lt;/p&gt;
+    go:: if .Comments
+    &lt;div class=&quot;comments&quot;&gt;
+      &lt;h3&gt;Comments&lt;/h3&gt;
+      go:: range .Comments
+      &lt;div class=&quot;comment&quot;&gt;
+        &lt;strong&gt;@.Author:&lt;/strong&gt; @.Text
+      &lt;/div&gt;
+      ::end
+    &lt;/div&gt;
+    ::end
+  &lt;/article&gt;
+  ::end
+&lt;/div&gt;
+::end</code></pre>
+<hr/>
+<h3>Complete Example</h3>
+<p>Here's a full template showing various features:</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;@.Title - goBastion&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;header&gt;
+        &lt;h1&gt;@.Title&lt;/h1&gt;
+        go:: if .User
+        &lt;p&gt;Welcome, @.User.Name! | &lt;a href=&quot;/logout&quot;&gt;Logout&lt;/a&gt;&lt;/p&gt;
+        go:: else
+        &lt;p&gt;&lt;a href=&quot;/login&quot;&gt;Login&lt;/a&gt; | &lt;a href=&quot;/register&quot;&gt;Register&lt;/a&gt;&lt;/p&gt;
+        ::end
+    &lt;/header&gt;
+
+    &lt;main&gt;
+        go:: if .Error
+        &lt;div class=&quot;alert alert-danger&quot;&gt;
+            @.Error
+        &lt;/div&gt;
+        ::end
+
+        go:: if .Success
+        &lt;div class=&quot;alert alert-success&quot;&gt;
+            @.Success
+        &lt;/div&gt;
+        ::end
+
+        go:: if .Users
+        &lt;table&gt;
+            &lt;thead&gt;
+                &lt;tr&gt;
+                    &lt;th&gt;ID&lt;/th&gt;
+                    &lt;th&gt;Name&lt;/th&gt;
+                    &lt;th&gt;Email&lt;/th&gt;
+                    &lt;th&gt;Role&lt;/th&gt;
+                    &lt;th&gt;Status&lt;/th&gt;
+                &lt;/tr&gt;
+            &lt;/thead&gt;
+            &lt;tbody&gt;
+                go:: range .Users
+                &lt;tr&gt;
+                    &lt;td&gt;@.ID&lt;/td&gt;
+                    &lt;td&gt;@.Name&lt;/td&gt;
+                    &lt;td&gt;@.Email&lt;/td&gt;
+                    &lt;td&gt;
+                        go:: if eq .Role &quot;admin&quot;
+                        &lt;span class=&quot;badge badge-danger&quot;&gt;Admin&lt;/span&gt;
+                        go:: else
+                        &lt;span class=&quot;badge badge-success&quot;&gt;User&lt;/span&gt;
+                        ::end
+                    &lt;/td&gt;
+                    &lt;td&gt;
+                        go:: if .IsActive
+                        &lt;span class=&quot;text-success&quot;&gt;Active&lt;/span&gt;
+                        go:: else
+                        &lt;span class=&quot;text-muted&quot;&gt;Inactive&lt;/span&gt;
+                        ::end
+                    &lt;/td&gt;
+                &lt;/tr&gt;
+                ::end
+            &lt;/tbody&gt;
+        &lt;/table&gt;
+        go:: else
+        &lt;p&gt;No users found.&lt;/p&gt;
+        ::end
+    &lt;/main&gt;
+
+    &lt;footer&gt;
+        &lt;p&gt;&amp;copy; 2025 goBastion&lt;/p&gt;
+    &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<hr/>
+<h3>Template Functions</h3>
+<p>goBastion provides built-in template functions:</p>
+<table>
+<thead>
+<tr><th>Function</th><th>Description</th><th>Example</th></tr>
+</thead>
+<tbody>
+<tr><td>`upper`</td><td>Convert to uppercase</td><td>`{{ upper .Text }}`</td></tr>
+<tr><td>`lower`</td><td>Convert to lowercase</td><td>`{{ lower .Text }}`</td></tr>
+<tr><td>`title`</td><td>Title case</td><td>`{{ title .Text }}`</td></tr>
+<tr><td>`eq`</td><td>Equal comparison</td><td>`{{ eq .Role &quot;admin&quot; }}`</td></tr>
+</tbody></table>
+<p>You can use these in logic blocks or with the standard <code>{{ }}</code> syntax.</p>
+<hr/>
+<h3>Before/After Comparison</h3>
+<h4>Old PHP-style Syntax (Deprecated)</h4>
+<pre><code class="language-html">&lt;?php if ($user != nil) { ?&gt;
+  &lt;p&gt;Hello &lt;?= $user-&gt;name ?&gt;&lt;/p&gt;
+  &lt;ul&gt;
+  &lt;?php foreach ($items as $item) { ?&gt;
+    &lt;li&gt;&lt;?= $item ?&gt;&lt;/li&gt;
+  &lt;?php } ?&gt;
+  &lt;/ul&gt;
+&lt;?php } ?&gt;</code></pre>
+<h4>New goBastion Syntax</h4>
+<pre><code class="language-html">go:: if .User
+  &lt;p&gt;Hello @.User.Name&lt;/p&gt;
+  &lt;ul&gt;
+  go:: range .Items
+    &lt;li&gt;@.&lt;/li&gt;
+  ::end
+  &lt;/ul&gt;
+::end</code></pre>
+<p><strong>Benefits of the new syntax:</strong></p>
+<ul>
+<li>✅ Cleaner, more Go-like</li>
+<li>✅ No PHP confusion</li>
+<li>✅ Easier to read and write</li>
+<li>✅ Better editor support</li>
+<li>✅ Same security guarantees</li>
+</ul>
+<hr/>
+<h3>Backward Compatibility</h3>
+<p>The old PHP-style tags (<code>&lt;?</code>, <code>&lt;?=</code>, <code>?&gt;</code>) are still supported for backward compatibility but are <strong>deprecated</strong>. You should migrate to the new syntax.</p>
+<p>Old templates will continue to work, but we recommend updating them to use <code>go::</code> and <code>@</code> syntax.</p>
+<hr/>
+<h3>Best Practices</h3>
+<h4>1. <strong>Keep templates simple</strong></h4>
+<p>Complex logic belongs in handlers, not templates.</p>
+<p><strong>❌ Bad:</strong></p>
+<pre><code class="language-html">go:: if and (gt .User.Age 18) (eq .User.Country &quot;US&quot;) (not .User.Banned)
+  &lt;button&gt;Access Content&lt;/button&gt;
+::end</code></pre>
+<p><strong>✅ Good (in handler):</strong></p>
+<pre><code class="language-go">data := map[string]any{
+    &quot;CanAccess&quot;: user.Age &gt; 18 &amp;&amp; user.Country == &quot;US&quot; &amp;&amp; !user.Banned,
+}</code></pre>
+<pre><code class="language-html">go:: if .CanAccess
+  &lt;button&gt;Access Content&lt;/button&gt;
+::end</code></pre>
+<h4>2. <strong>Use meaningful variable names</strong></h4>
+<pre><code class="language-html">go:: range $user := .Users
+  &lt;li&gt;@$user.Name&lt;/li&gt;
+::end</code></pre>
+<h4>3. <strong>Check for empty collections</strong></h4>
+<pre><code class="language-html">go:: if .Items
+  &lt;!-- show items --&gt;
+go:: else
+  &lt;p&gt;No items available&lt;/p&gt;
+::end</code></pre>
+<h4>4. <strong>Leverage HTML escaping</strong></h4>
+<p>Never use raw HTML unless absolutely necessary. The <code>@</code> syntax escapes by default.</p>
+<hr/>
+<h3>Security</h3>
+<h4>Automatic Escaping</h4>
+<p>All <code>@expr</code> outputs are <strong>automatically HTML-escaped</strong>:</p>
+<pre><code class="language-html">@userComment
+&lt;!-- Input: &lt;script&gt;alert(&#x27;xss&#x27;)&lt;/script&gt; --&gt;
+&lt;!-- Output: &amp;lt;script&amp;gt;alert(&amp;#39;xss&amp;#39;)&amp;lt;/script&amp;gt; --&gt;</code></pre>
+<h4>CSRF Protection</h4>
+<p>goBastion includes built-in CSRF protection. Use CSRF tokens in forms:</p>
+<pre><code class="language-html">&lt;form method=&quot;POST&quot; action=&quot;/submit&quot;&gt;
+    go:: if .CSRFToken
+    &lt;input type=&quot;hidden&quot; name=&quot;csrf_token&quot; value=&quot;@.CSRFToken&quot;&gt;
+    ::end
+
+    &lt;!-- form fields --&gt;
+    &lt;button type=&quot;submit&quot;&gt;Submit&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+<hr/>
+<h3>Troubleshooting</h3>
+<h4>Common Errors</h4>
+<p><strong>1. Missing &lt;code&gt;::end&lt;/code&gt;</strong></p>
+<pre><code class="language-text">Error: unexpected EOF, expected {{ end }}</code></pre>
+<p>Make sure every <code>go::</code> has a matching <code>::end</code>.</p>
+<p><strong>2. Syntax error in Go statement</strong></p>
+<pre><code class="language-text">Error: unexpected &quot;}&quot;, expected expression</code></pre>
+<p>Check your Go syntax inside <code>go::</code> blocks.</p>
+<p><strong>3. Undefined variable</strong></p>
+<pre><code class="language-text">Error: can&#x27;t evaluate field User in type map[string]interface{}</code></pre>
+<p>Make sure you're passing the correct data to the template.</p>
+<hr/>
+<h3>Summary</h3>
+<ul>
+<li><strong>&lt;code&gt;@expr&lt;/code&gt;</strong> - Echo expressions (HTML-escaped)</li>
+<li><strong>&lt;code&gt;go:: ... ::end&lt;/code&gt;</strong> - Logic blocks (if, range, with)</li>
+<li>Built on Go's <code>html/template</code> for security</li>
+<li>Clean, readable syntax</li>
+<li>Backward compatible with old PHP-style tags</li>
+</ul>
+<p>Happy templating! 🎨</p>
+
+<h3>Rendering a Template</h3>
 
                         <p>In your handler, you use the <code>view.Render</code> function to render a template and pass data to it.</p>
 
