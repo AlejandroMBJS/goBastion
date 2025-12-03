@@ -1,1707 +1,3374 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>goBastion - Documentation</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://rsms.me/">
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-    <style>
-        :root { font-family: 'Inter', sans-serif; }
-        @supports (font-variation-settings: normal) {
-            :root { font-family: 'Inter var', sans-serif; }
-        }
-
-        /* Custom scrollbar for webkit browsers */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #4b5563;
-            border-radius: 4px;
-        }
-        .dark ::-webkit-scrollbar-thumb {
-            background: #6b7280;
-        }
-
-        /* TOC active link */
-        .toc-link.active {
-            color: #60a5fa; /* blue-400 */
-            border-left-color: #60a5fa;
-            background-color: rgba(59, 130, 246, 0.08);
-        }
-
-        /* Typography base */
-        .prose {
-            color: #e5e7eb;
-            line-height: 1.7;
-            font-size: 1rem;
-        }
-        .prose h1 {
-            font-size: 2.25rem;
-            line-height: 2.5rem;
-            font-weight: 800;
-            color: #ffffff;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid #374151;
-            padding-bottom: 0.5rem;
-        }
-        .prose h2 {
-            font-size: 1.75rem;
-            line-height: 2.1rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-top: 2.5rem;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid #374151;
-            padding-bottom: 0.5rem;
-        }
-        .prose h3 {
-            font-size: 1.25rem;
-            line-height: 1.75rem;
-            font-weight: 600;
-            color: #f9fafb;
-            margin-top: 1.75rem;
-            margin-bottom: 0.75rem;
-        }
-        .prose p {
-            margin-bottom: 1rem;
-            color: #e5e7eb;
-        }
-        .prose a {
-            color: #60a5fa;
-            text-decoration: none;
-        }
-        .prose a:hover {
-            color: #93c5fd;
-            text-decoration: underline;
-        }
-        .prose strong {
-            color: #ffffff;
-            font-weight: 600;
-        }
-        .prose ul {
-            list-style-type: disc;
-            padding-left: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        .prose ol {
-            list-style-type: decimal;
-            padding-left: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        .prose li {
-            margin-bottom: 0.35rem;
-        }
-        .prose table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 0.75rem;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
-        .prose th {
-            background-color: #1f2937;
-            padding: 0.5rem;
-            border: 1px solid #374151;
-            font-weight: 600;
-            color: #f9fafb;
-        }
-        .prose td {
-            padding: 0.5rem;
-            border: 1px solid #374151;
-        }
-
-        /* Code & code-block styling */
-        .prose code {
-            background-color: #374151;
-            color: #93c5fd;
-            border-radius: 0.25rem;
-            padding: 0.05rem 0.3rem;
-            font-size: 0.875rem;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        }
-        .prose pre {
-            background-color: #020617;
-            border-radius: 0.75rem;
-            padding: 1rem;
-            font-size: 0.9rem;
-            overflow-x: auto;
-            margin-top: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        .prose pre code {
-            background: transparent;
-            padding: 0;
-            border-radius: 0;
-            color: #e5e7eb;
-            font-size: 0.9rem;
-        }
-
-        .code-block {
-            margin-top: 1rem;
-            margin-bottom: 1.25rem;
-            border-radius: 0.75rem;
-            border: 1px solid #1f2937;
-            overflow: hidden;
-            background: radial-gradient(circle at top left, rgba(59,130,246,0.12), #020617);
-        }
-        .code-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.35rem 0.85rem;
-            background-color: rgba(15,23,42,0.96);
-            border-bottom: 1px solid #1f2937;
-            font-size: 0.75rem;
-            letter-spacing: 0.07em;
-            text-transform: uppercase;
-            color: #9ca3af;
-        }
-        .code-lang {
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        }
-        .copy-btn {
-            border-radius: 9999px;
-            border: 1px solid #4b5563;
-            padding: 0.15rem 0.75rem;
-            font-size: 0.75rem;
-            color: #e5e7eb;
-            background-color: #020617;
-            cursor: pointer;
-            transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-        }
-        .copy-btn:hover {
-            background-color: #111827;
-            border-color: #6b7280;
-        }
-
-        /* Callouts */
-        .callout {
-            padding: 1rem;
-            border-radius: 0.75rem;
-            margin-top: 1rem;
-            margin-bottom: 1rem;
-        }
-        .callout.tip {
-            background-color: rgba(37, 99, 235, 0.2);
-            border-left: 4px solid #60a5fa;
-        }
-        .callout.warning {
-            background-color: rgba(234, 179, 8, 0.2);
-            border-left: 4px solid #facc15;
-        }
-        .callout.danger {
-            background-color: rgba(248, 113, 113, 0.2);
-            border-left: 4px solid #f87171;
-        }
-
-        /* Tabs */
-        .tabs-container .tab-buttons {
-            background-color: #020617;
-            border-radius: 0.75rem 0.75rem 0 0;
-            overflow: hidden;
-        }
-        .tab-btn {
-            flex: 1;
-            padding: 0.5rem 0.75rem;
-            font-size: 0.85rem;
-            color: #9ca3af;
-            border-bottom: 2px solid transparent;
-            background-color: transparent;
-            cursor: pointer;
-            transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
-        }
-        .tab-btn:hover {
-            background-color: rgba(31,41,55,0.75);
-        }
-        .tab-btn.active {
-            color: #60a5fa;
-            border-color: #60a5fa;
-            background-color: rgba(37, 99, 235, 0.25);
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Collapsed sections */
-        section.collapsed h2 {
-            opacity: 0.85;
-        }
-
-        /* Body background */
-        body {
-            background: radial-gradient(circle at top left, rgba(59,130,246,0.08), transparent) fixed,
-                        radial-gradient(circle at bottom right, rgba(37,99,235,0.12), transparent) fixed,
-                        #ffffff;
-        }
-        .dark body {
-            background: radial-gradient(circle at top left, rgba(59,130,246,0.18), transparent) fixed,
-                        radial-gradient(circle at bottom right, rgba(37,99,235,0.25), transparent) fixed,
-                        #020617;
-        }
-    </style>
-    <script>
-        // Set theme on initial load to prevent FOUC
-        (function() {
-            const stored = localStorage.getItem('theme');
-            if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-        })();
-    </script>
-</head>
-<body class="bg-white/95 dark:bg-gray-950/95 text-gray-700 dark:text-gray-300 antialiased min-h-screen">
-
-    <!-- Mobile Header -->
-    <header class="md:hidden bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm sticky top-0 z-30 flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-800">
-        <a href="#" class="text-xl font-bold text-gray-900 dark:text-white">goBastion</a>
-        <div class="flex items-center space-x-4">
-            <button id="theme-toggle-mobile" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg p-2">
-                <!-- Icon will be inserted by JS -->
-            </button>
-            <button id="menu-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg p-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-            </button>
-        </div>
-    </header>
-
-    <div class="max-w-screen-2xl mx-auto flex">
-        <!-- Sidebar -->
-        <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 bg-gray-50/95 dark:bg-gray-900/95 backdrop-blur-sm border-r border-gray-200 dark:border-gray-800 p-6 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-40 md:z-10 md:flex flex-col">
-            <div class="flex items-center justify-between mb-6">
-                <a href="#" class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">goBastion</a>
-                <button id="theme-toggle-desktop" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg p-2 hidden md:block">
-                    <!-- Icon will be inserted by JS -->
-                </button>
-            </div>
-            <input type="search" id="search-input" placeholder="Search docs..." class="w-full px-3 py-2 mb-4 bg-white dark:bg-gray-800 rounded-md border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
-            <nav id="toc" class="flex-grow overflow-y-auto -mx-3 pr-2 space-y-1 text-sm">
-                <!-- TOC will be generated by JS -->
-            </nav>
-            <div class="mt-4 text-xs text-gray-500 dark:text-gray-500 hidden md:block">
-                <p class="font-semibold uppercase tracking-wide mb-1 text-gray-400">Tip</p>
-                <p>Use the search box to quickly filter topics, or click on section titles to collapse/expand content.</p>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="w-full md:pl-72">
-            <div class="max-w-4xl mx-auto px-6 md:px-10 py-10">
-                <article id="documentation-content" class="prose max-w-none">
-                    
-                    <!-- Hero + Overview -->
-                    <section id="overview" class="not-prose mb-10">
-                        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight">
-                            goBastion Framework
-                        </h1>
-                        <p class="mt-4 text-xl text-gray-600 dark:text-gray-400 max-w-2xl">
-                            A production-ready Go web framework built from the standard library. No magic, full control.
-                        </p>
-                        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 my-8">
-                            <a href="#quickstart" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 shadow-sm no-underline">
-                                Get Started
-                            </a>
-                            <a href="#cli-reference" class="inline-flex items-center justify-center px-5 py-3 border text-base font-medium rounded-md text-blue-700 bg-blue-50 hover:bg-blue-100 dark:text-white dark:bg-gray-800 dark:hover:bg-gray-700 border-blue-200/70 dark:border-gray-700 no-underline">
-                                CLI Reference
-                            </a>
-                        </div>
-                        <p class="text-lg text-gray-700 dark:text-gray-300 max-w-3xl">
-                            goBastion is a minimalist, yet powerful web framework for Go, designed for developers who value clarity, performance, and control.
-                            Unlike frameworks that rely heavily on third-party libraries and "magic," goBastion is built almost entirely on Go's robust standard
-                            library. It provides a solid foundation for building secure, scalable web applications and APIs, drawing inspiration from the developer
-                            experience of frameworks like FastAPI and Django, but with the raw power and simplicity of native Go.
-                        </p>
-                    </section>
-
-                    <!-- Introduction -->
-                    <section id="introduction">
-                        <h2>What is goBastion?</h2>
-                        <p>goBastion is both a web framework and a project generator. At its core, it's a collection of well-structured Go packages that provide essential web development features: a powerful router, a flexible middleware system, a simple database layer, a secure authentication module, and more. It's designed to be a "batteries-included" framework, but where you can easily inspect and change every single battery.</p>
-                        <p>The accompanying <code>go-bastion</code> CLI tool bootstraps new projects from the framework template, setting up a clean, idiomatic project structure so you can start developing your business logic immediately.</p>
-                        <h3>When to Use It</h3>
-                        <ul>
-                            <li>When you want a production-ready starting point without sacrificing control.</li>
-                            <li>When you want to learn how a web framework is built from the ground up using only the standard library.</li>
-                            <li>For building high-performance APIs and web services where dependencies should be minimal.</li>
-                            <li>When you appreciate clean architecture and a clear separation between framework and application code.</li>
-                        </ul>
-                        <h3>When Not to Use It</h3>
-                        <ul>
-                            <li>If you need a massive ecosystem of third-party plugins and extensions out of the box.</li>
-                            <li>If you prefer a full-featured ORM and want to avoid writing SQL.</li>
-                            <li>If you are looking for a visual, drag-and-drop admin panel builder.</li>
-                        </ul>
-                    </section>
-
-                    <!-- Philosophy & Design Goals -->
-                    <section id="philosophy">
-                        <h2>Philosophy &amp; Design Goals</h2>
-                        <p>The development of goBastion is guided by a few core principles:</p>
-                        <ul>
-                            <li><strong>Standard Library First:</strong> Leverage the power and stability of Go's standard library wherever possible. This reduces dependency bloat, improves security, and makes the codebase easier to understand and maintain. The only external dependencies are for the database driver (<code>go-sqlite3</code>) and password hashing (<code>bcrypt</code>).</li>
-                            <li><strong>Clarity Over Magic:</strong> The framework should be transparent. Developers should be able to easily trace a request from the router to the handler and understand every step in between. There are no hidden global states or complex reflection-based mechanics.</li>
-                            <li><strong>Security by Default:</strong> Production-grade security features like CSRF protection, JWT authentication, security headers, and rate limiting are built-in and enabled with sensible defaults. The architecture promotes secure coding practices like parameterized SQL queries and context-aware handlers.</li>
-                            <li><strong>Developer Experience (DX):</strong> While minimalist, the framework is designed to be pleasant to use. Features like the project generator, modular routing, and a clear project structure are all aimed at making development fast and enjoyable.</li>
-                            <li><strong>Performance:</strong> By sticking close to the standard library and avoiding unnecessary abstractions, goBastion is designed to be fast. It embraces Go's concurrency model to handle requests efficiently.</li>
-                        </ul>
-                    </section>
-
-                    <!-- Installation -->
-                    <section id="installation">
-                        <h2>Installation</h2>
-                        <p>Getting started with goBastion involves two steps: installing the project generator CLI and then using it to create your new application.</p>
-                        <h3>Prerequisites</h3>
-                        <p>You need to have Go installed on your system (version 1.18 or higher is recommended).</p>
-                        <h3>1. Install the CLI</h3>
-                        <p>The <code>go-bastion</code> CLI tool automates the creation of new projects. Install it globally by running the following command from your terminal:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">bash</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-bash">go install github.com/AlejandroMBJS/goBastion/cmd/go-bastion@latest</code></pre>
-                        </div>
-                        <p>This will download, compile, and install the <code>go-bastion</code> executable in your Go binary path (e.g., <code>$GOPATH/bin</code> or <code>$HOME/go/bin</code>).</p>
-                        <h3>2. Create a New Project</h3>
-                        <p>Once the CLI is installed, you can create a new project. Navigate to the directory where you want your project to live and run:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">bash</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-bash">go-bastion my-new-app</code></pre>
-                        </div>
-                        <p>Replace <code>my-new-app</code> with your desired project name. The CLI will perform the following steps:</p>
-                        <ul>
-                            <li>Clone the goBastion template repository.</li>
-                            <li>Remove the original Git history for a fresh start.</li>
-                            <li>Update the Go module name throughout the project.</li>
-                            <li>Run <code>go mod tidy</code> to ensure dependencies are clean.</li>
-                        </ul>
-                        <p>Your new, ready-to-develop application will be in the <code>my-new-app</code> directory.</p>
-                    </section>
-
-                    <!-- Project Structure -->
-                    <section id="project-structure">
-                        <h2>Project Structure</h2>
-                        <p>goBastion enforces a clean, layered architecture. When you generate a new project, you'll see the following structure:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">plaintext</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-plaintext">my-new-app/
-├── cmd/
-│   └── server/
-│       └── main.go           # Application entry point, CLI dispatcher
-├── config/
-│   └── config.json           # Main configuration file
-├── internal/
-│   ├── app/                  # YOUR application code lives here
-│   │   ├── models/
-│   │   └── router/
-│   └── framework/
-│       ├── admin/
-│       ├── config/
-│       ├── db/
-│       ├── docs/
-│       ├── middleware/
-│       ├── router/
-│       ├── security/
-│       └── view/
-├── static/
-│   └── css/
-├── templates/
-│   ├── admin/
-│   └── auth/
-├── .air.toml                 # Live-reloading configuration
-├── Dockerfile                # For building production Docker images
-├── go.mod                    # Go module definition
-└── README.md                 # Your project's README
-</code></pre>
-                        </div>
-                        <h3>Key Directories</h3>
-                        <ul>
-                            <li><code>/cmd/server/main.go</code>: This is the main entry point for your application. It initializes all the framework components (config, DB, router) and also acts as the dispatcher for all CLI commands (like <code>serve</code>, <code>migrate</code>, etc.).</li>
-                            <li><code>/internal/app/</code>: This is where you'll spend most of your time. It's your application's business logic, completely separate from the framework's core. You'll add your models and route handlers here.</li>
-                            <li><code>/internal/framework/</code>: This is the heart of goBastion. It contains all the reusable, domain-agnostic components like the router, database helpers, and security features. You typically won't need to modify files here unless you're extending the framework itself.</li>
-                            <li><code>/config/config.json</code>: A central place to manage your application's configuration for different environments.</li>
-                            <li><code>/templates/</code>: HTML templates for your application's UI, including the admin panel and authentication pages.</li>
-                        </ul>
-                    </section>
-
-                    <!-- Quickstart Tutorial -->
-                    <section id="quickstart">
-                        <h2>Quickstart Tutorial</h2>
-                        <p>Let's build and run a new application in under 5 minutes.</p>
-                        <h3>1. Create the Project</h3>
-                        <p>First, make sure you've installed the CLI (see Installation section). Then, create the project:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">bash</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-bash"># Create a new project named "myapi"
-go-bastion myapi
-
-# Navigate into the new directory
-cd myapi</code></pre>
-                        </div>
-                        <h3>2. Run the Development Server</h3>
-                        <p>The generated project includes a <code>serve</code> command to start the web server. It uses <code>.air.toml</code> for live-reloading, so the server will automatically restart when you change a file.</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">bash</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-bash"># This command will start the server on http://localhost:8080
-go run ./cmd/server/ serve</code></pre>
-                        </div>
-                        <h3>3. Explore the API Docs</h3>
-                        <p>goBastion automatically generates OpenAPI 3.0 documentation for your API. Open your browser and navigate to:</p>
-                        <p><a href="http://localhost:8080/docs" target="_blank">http://localhost:8080/docs</a></p>
-                        <p>You'll see an interactive Swagger UI where you can explore and test all the built-in API endpoints.</p>
-                        <h3>4. Create Your First Route</h3>
-                        <p>Let's add a simple "Hello World" endpoint.</p>
-                        <p><strong>Step 1: Create a new handler file.</strong></p>
-                        <p>Create <code>internal/app/router/greeting.go</code>:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">package router
-
-import (
-    "encoding/json"
-    "net/http"
-
-    "goBastion/internal/framework/router"
-)
-
-// RegisterGreetingRoutes adds our new greeting route
-func RegisterGreetingRoutes(r *router.Router) {
-    r.Handle("GET", "/api/v1/hello", handleHello)
-}
-
-// handleHello is our new handler
-func handleHello(w http.ResponseWriter, r *http.Request, params map[string]string) {
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(map[string]string{
-        "message": "Hello, World!",
-    })
-}
-</code></pre>
-                        </div>
-                        <p><strong>Step 2: Register the new route.</strong></p>
-                        <p>Open <code>cmd/server/main.go</code> and find the section where routes are registered. Add a call to your new registration function:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">// In cmd/server/main.go, inside the startServer function...
-
-// ... after router.RegisterUserRoutes(r)
-router.RegisterGreetingRoutes(r) // Add this line
-</code></pre>
-                        </div>
-                        <p>Because you're using live-reloading, the server will restart automatically. Now you can test your new endpoint:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">bash</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-bash">curl http://localhost:8080/api/v1/hello</code></pre>
-                        </div>
-                        <p>You should see the response:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">json</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-json">{
-  "message": "Hello, World!"
-}
-</code></pre>
-                        </div>
-                        <p>Congratulations! You've just extended the API.</p>
-                    </section>
-
-                    <!-- Beginner Friendly From Scratch -->
-                    <section id="beginner-guide">
-                        <h2>Beginner-Friendly Guide: From Zero to Your First API</h2>
-                        <p>This section is for you if you have <strong>never written code before</strong> or you feel completely new to Go and web development. We'll walk step-by-step, assuming nothing.</p>
-
-                        <h3>What You Need Installed</h3>
-                        <ol>
-                            <li><strong>Go</strong>: Go is the programming language. Download and install it from the official website.</li>
-                            <li><strong>A Terminal</strong>: On Windows you can use PowerShell; on macOS or Linux you can use the default Terminal.</li>
-                            <li><strong>A Code Editor</strong>: Visual Studio Code is a good free option.</li>
-                        </ol>
-
-                        <div class="callout tip">
-                            <p><strong>If you can type commands and save a file, you can do this.</strong> You don't need to understand everything at first. Just follow the steps and see what happens.</p>
-                        </div>
-
-                        <h3>Step 1: Create a Folder</h3>
-                        <p>Pick a folder where you want your projects to live, for example <code>C:\projects</code> on Windows or <code>~/projects</code> on macOS/Linux. Inside, create a new folder:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">bash</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-bash">mkdir my-first-bastion
-cd my-first-bastion</code></pre>
-                        </div>
-
-                        <h3>Step 2: Initialize a Go Module</h3>
-                        <p>A Go module is like the "container" for your project. Run:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">bash</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-bash">go mod init my-first-bastion</code></pre>
-                        </div>
-                        <p>This creates a file called <code>go.mod</code> that describes your project.</p>
-
-                        <h3>Step 3: Install and Run goBastion CLI</h3>
-                        <p>Now install the CLI (you only do this once per machine):</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">bash</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-bash">go install github.com/AlejandroMBJS/goBastion/cmd/go-bastion@latest</code></pre>
-                        </div>
-                        <p>Then generate your project (this will create a lot of folders and files for you):</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">bash</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-bash">go-bastion app
-cd app</code></pre>
-                        </div>
-
-                        <h3>Step 4: Run the Server</h3>
-                        <p>To start your first server:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">bash</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-bash">go run ./cmd/server/ serve</code></pre>
-                        </div>
-                        <p>If everything is OK, you will see log messages in the terminal. Now open your browser and go to:</p>
-                        <p><a href="http://localhost:8080" target="_blank">http://localhost:8080</a></p>
-
-                        <div class="callout tip">
-                            <p><strong>Beginner check:</strong> If you see any page (even a simple one), you already made a web server run. That's a big deal.</p>
-                        </div>
-
-                        <h3>Step 5: Your First Simple “Hello” Handler</h3>
-                        <p>Now let's build something tiny and obvious, so you can see how Go code looks.</p>
-                        <ol>
-                            <li>Open your editor (VS Code).</li>
-                            <li>In the project, create the file <code>internal/app/router/hello_beginner.go</code>.</li>
-                            <li>Paste this code:</li>
-                        </ol>
-
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">package router
-
-import (
-    "fmt"
-    "net/http"
-
-    frameworkrouter "goBastion/internal/framework/router"
-)
-
-// RegisterBeginnerRoutes adds very simple routes for people learning
-func RegisterBeginnerRoutes(r *frameworkrouter.Router) {
-    r.Handle("GET", "/beginner/hello", handleBeginnerHello)
-}
-
-// handleBeginnerHello sends plain text back to the browser.
-func handleBeginnerHello(w http.ResponseWriter, r *http.Request, params map[string]string) {
-    fmt.Fprintln(w, "Hello beginner! This is your first goBastion route.")
-}</code></pre>
-                        </div>
-
-                        <h3>Step 6: Register It in main.go</h3>
-                        <p>Open <code>cmd/server/main.go</code> and look for where other routes are registered (for example, <code>router.RegisterUserRoutes</code>). Add this line somewhere near them:</p>
-
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">router.RegisterBeginnerRoutes(r)</code></pre>
-                        </div>
-
-                        <p>Save the file, make sure the server is running (or restart it), and now open:</p>
-                        <p><a href="http://localhost:8080/beginner/hello" target="_blank">http://localhost:8080/beginner/hello</a></p>
-
-                        <p>You should see the message:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">text</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code>Hello beginner! This is your first goBastion route.</code></pre>
-                        </div>
-
-                        <div class="callout tip">
-                            <p><strong>What just happened?</strong> The browser made an HTTP request, goBastion router decided which handler to call, and your function wrote text back to the browser.</p>
-                        </div>
-
-                        <h3>Step 7: Beginner JSON Example</h3>
-                        <p>Now let's return JSON, which is what APIs typically send:</p>
-
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">package router
-
-import (
-    "encoding/json"
-    "net/http"
-
-    frameworkrouter "goBastion/internal/framework/router"
-)
-
-func RegisterBeginnerJSONRoutes(r *frameworkrouter.Router) {
-    r.Handle("GET", "/beginner/json", handleBeginnerJSON)
-}
-
-func handleBeginnerJSON(w http.ResponseWriter, r *http.Request, params map[string]string) {
-    w.Header().Set("Content-Type", "application/json")
-
-    // This is the data we want to send
-    response := map[string]string{
-        "status":  "ok",
-        "message": "JSON is just a structured way to send data.",
-    }
-
-    // Convert Go map to JSON and write it to the response
-    json.NewEncoder(w).Encode(response)
-}</code></pre>
-                        </div>
-
-                        <p>Don't forget to call <code>RegisterBeginnerJSONRoutes</code> in <code>main.go</code> too, just like before. Then go to:</p>
-                        <p><a href="http://localhost:8080/beginner/json" target="_blank">http://localhost:8080/beginner/json</a></p>
-
-                        <h3>Step 8: Beginner Form + HTML Example</h3>
-                        <p>Finally, let's serve a very simple HTML page with a form and read its value.</p>
-
-                        <p>1. Create a template file <code>templates/beginner/form.html</code>:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">html</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-html">&lt;!doctype html&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;meta charset="utf-8"&gt;
-    &lt;title&gt;Beginner Form&lt;/title&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;h1&gt;Beginner Form&lt;/h1&gt;
-    &lt;form method="POST" action="/beginner/form"&gt;
-      &lt;label&gt;Your name:
-        &lt;input type="text" name="name"&gt;
-      &lt;/label&gt;
-      &lt;button type="submit"&gt;Send&lt;/button&gt;
-    &lt;/form&gt;
-
-    &lt;? if .Name != "" ?&gt;
-      &lt;p&gt;Hello &lt;?= .Name ?&gt;! Nice to meet you.&lt;/p&gt;
-    &lt;? end ?&gt;
-  &lt;/body&gt;
-&lt;/html&gt;</code></pre>
-                        </div>
-
-                        <p>2. Now create a handler that renders that template. In <code>internal/app/router/beginner_templates.go</code>:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">package router
-
-import (
-    "net/http"
-
-    "goBastion/internal/framework/view"
-    frameworkrouter "goBastion/internal/framework/router"
-)
-
-func RegisterBeginnerTemplateRoutes(r *frameworkrouter.Router, engine *view.Engine) {
-    r.Handle("GET", "/beginner/form", func(w http.ResponseWriter, r *http.Request, params map[string]string) {
-        engine.Render(w, "beginner/form", map[string]any{
-            "Name": "",
-        })
-    })
-
-    r.Handle("POST", "/beginner/form", func(w http.ResponseWriter, r *http.Request, params map[string]string) {
-        _ = r.ParseForm()
-        name := r.FormValue("name")
-
-        engine.Render(w, "beginner/form", map[string]any{
-            "Name": name,
-        })
-    })
-}</code></pre>
-                        </div>
-
-                        <p>In <code>main.go</code>, pass the already-created template engine (check how admin/auth routes do it) to <code>RegisterBeginnerTemplateRoutes</code>. Then go to:</p>
-                        <p><a href="http://localhost:8080/beginner/form" target="_blank">http://localhost:8080/beginner/form</a></p>
-
-                        <div class="callout tip">
-                            <p>With these three beginner examples (plain text, JSON, and HTML form), a complete newbie can see how Go, HTTP and goBastion work together from scratch.</p>
-                        </div>
-                    </section>
-
-                    <!-- Mid Level Examples -->
-                    <section id="intermediate-examples">
-                        <h2>Intermediate Examples: Validations, Middleware and Modular Design</h2>
-                        <p>Once you are comfortable with the beginner examples, it’s time to write more realistic APIs. In this section you will:</p>
-                        <ul>
-                            <li>Validate and decode JSON from the request body.</li>
-                            <li>Use middleware to log and measure requests.</li>
-                            <li>Organize your code into modules that feel clean in large projects.</li>
-                        </ul>
-
-                        <h3>Example 1: Validating JSON Input for a “Todo” API</h3>
-                        <p>Create <code>internal/app/models/todo.go</code>:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">package models
-
-type Todo struct {
-    ID      int    `json:"id"`
-    Title   string `json:"title"`
-    Done    bool   `json:"done"`
-}
-
-type CreateTodoInput struct {
-    Title string `json:"title"`
-}</code></pre>
-                        </div>
-
-                        <p>Now create <code>internal/app/router/todos.go</code>:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">package router
-
-import (
-    "encoding/json"
-    "net/http"
-    "strings"
-
-    "goBastion/internal/app/models"
-    "goBastion/internal/framework/db"
-    frameworkrouter "goBastion/internal/framework/router"
-)
-
-func RegisterTodoRoutes(r *frameworkrouter.Router) {
-    r.Handle("POST", "/api/v1/todos", handleCreateTodo)
-}
-
-// handleCreateTodo shows simple JSON decoding + validation error handling.
-func handleCreateTodo(w http.ResponseWriter, r *http.Request, params map[string]string) {
-    if r.Method != http.MethodPost {
-        http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
-        return
-    }
-
-    var input models.CreateTodoInput
-    if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
-        http.Error(w, "invalid JSON body", http.StatusBadRequest)
-        return
-    }
-
-    input.Title = strings.TrimSpace(input.Title)
-    if input.Title == "" {
-        http.Error(w, "title is required", http.StatusBadRequest)
-        return
-    }
-
-    todo, err := db.CreateTodo(r.Context(), input) // Suppose you add this helper
-    if err != nil {
-        http.Error(w, "could not create todo", http.StatusInternalServerError)
-        return
-    }
-
-    w.Header().Set("Content-Type", "application/json")
-    w.WriteHeader(http.StatusCreated)
-    json.NewEncoder(w).Encode(todo)
-}</code></pre>
-                        </div>
-
-                        <p>In <code>db</code> you could have something like this (simplified):</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">package db
-
-import (
-    "context"
-
-    "goBastion/internal/app/models"
-)
-
-func CreateTodo(ctx context.Context, input models.CreateTodoInput) (*models.Todo, error) {
-    // Example using Exec + LastInsertId, or QueryRow + RETURNING ...
-    // For SQLite:
-    res, err := getDB().ExecContext(ctx,
-        "INSERT INTO todos (title, done) VALUES (?, ?)",
-        input.Title,
-        false,
-    )
-    if err != nil {
-        return nil, err
-    }
-
-    id, err := res.LastInsertId()
-    if err != nil {
-        return nil, err
-    }
-
-    return &models.Todo{
-        ID:    int(id),
-        Title: input.Title,
-        Done:  false,
-    }, nil
-}</code></pre>
-                        </div>
-
-                        <h3>Example 2: Simple Logging & Timing Middleware</h3>
-                        <p>goBastion already has its own middleware system, but you can write your own very easily. This example logs the method, path and duration of each request.</p>
-
-                        <p>Create <code>internal/framework/middleware/logging.go</code> (if it does not exist):</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">package middleware
-
-import (
-    "log"
-    "net/http"
-    "time"
-
-    "goBastion/internal/framework/router"
-)
-
-// LoggingMiddleware wraps handlers to log method, path and duration.
-func LoggingMiddleware(next router.Handler) router.Handler {
-    return func(w http.ResponseWriter, r *http.Request, params map[string]string) {
-        start := time.Now()
-        next(w, r, params)
-        duration := time.Since(start)
-        log.Printf("%s %s took %s", r.Method, r.URL.Path, duration)
-    }
-}</code></pre>
-                        </div>
-
-                        <p>Then in your server setup (inside <code>startServer</code> in <code>main.go</code>):</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">r := frameworkrouter.New()
-
-// Wrap all routes with logging
-r.Use(middleware.LoggingMiddleware)
-
-// Then register routes
-router.RegisterUserRoutes(r)
-router.RegisterTodoRoutes(r)
-// ... etc.</code></pre>
-                        </div>
-
-                        <h3>Example 3: Organizing by Feature (Module-Based)</h3>
-                        <p>For intermediate projects, it’s useful to think in “features” or “modules”. For example:</p>
-                        <ul>
-                            <li><code>auth/</code> for authentication.</li>
-                            <li><code>todos/</code> for todo management.</li>
-                            <li><code>billing/</code> for payments.</li>
-                        </ul>
-
-                        <p>Within <code>internal/app/</code> you can create:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">plaintext</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-plaintext">internal/app/
-├── auth/
-│   ├── handlers.go
-│   └── service.go
-├── todos/
-│   ├── handlers.go
-│   ├── service.go
-│   └── repository.go
-└── router/
-    └── routes.go</code></pre>
-                        </div>
-
-                        <p>Your <code>router/routes.go</code> becomes the central place to register all feature routes:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">package router
-
-import (
-    frameworkrouter "goBastion/internal/framework/router"
-    "goBastion/internal/app/auth"
-    "goBastion/internal/app/todos"
-)
-
-func RegisterAllRoutes(r *frameworkrouter.Router) {
-    auth.RegisterAuthRoutes(r)
-    todos.RegisterTodoRoutes(r)
-}</code></pre>
-                        </div>
-
-                        <p>This pattern scales nicely as your project grows.</p>
-                    </section>
-
-                    <!-- Advanced / Senior Examples -->
-                    <section id="advanced-concurrency">
-                        <h2>Advanced: Concurrency, goroutines and Mutex for Big Projects</h2>
-                        <p>Once you are comfortable with routing, JSON and middleware, the next step is to harness Go’s biggest superpower: <strong>concurrency</strong>. In big projects you often need to:</p>
-                        <ul>
-                            <li>Run background jobs.</li>
-                            <li>Share in-memory state safely between requests.</li>
-                            <li>Collect metrics or rate limit traffic in a concurrent-safe way.</li>
-                        </ul>
-
-                        <div class="callout warning">
-                            <p><strong>Important:</strong> Never share mutable data between goroutines without some form of synchronization (like <code>sync.Mutex</code>) or using channels. Otherwise you get data races and undefined behavior.</p>
-                        </div>
-
-                        <h3>Example 1: In-Memory Request Counter with Mutex</h3>
-                        <p>Suppose you want a simple in-memory counter of how many requests hit each path, only for debugging or metrics.</p>
-
-                        <p>Create <code>internal/framework/metrics/requests.go</code>:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">package metrics
-
-import (
-    "net/http"
-    "sync"
-    "time"
-
-    "goBastion/internal/framework/router"
-)
-
-type RequestCounter struct {
-    mu       sync.Mutex
-    counts   map[string]int
-    started  time.Time
-}
-
-func NewRequestCounter() *RequestCounter {
-    return &RequestCounter{
-        counts:  make(map[string]int),
-        started: time.Now(),
-    }
-}
-
-func (rc *RequestCounter) Middleware(next router.Handler) router.Handler {
-    return func(w http.ResponseWriter, r *http.Request, params map[string]string) {
-        path := r.URL.Path
-
-        rc.mu.Lock()
-        rc.counts[path]++
-        rc.mu.Unlock()
-
-        next(w, r, params)
-    }
-}
-
-// Snapshot returns a copy of the metrics for safe reading.
-func (rc *RequestCounter) Snapshot() map[string]int {
-    rc.mu.Lock()
-    defer rc.mu.Unlock()
-
-    out := make(map[string]int, len(rc.counts))
-    for k, v := range rc.counts {
-        out[k] = v
-    }
-    return out
-}
-
-func (rc *RequestCounter) Uptime() time.Duration {
-    return time.Since(rc.started)
-}</code></pre>
-                        </div>
-
-                        <p>Then expose a debug endpoint to read those metrics safely:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">package router
-
-import (
-    "encoding/json"
-    "net/http"
-
-    "goBastion/internal/framework/metrics"
-    frameworkrouter "goBastion/internal/framework/router"
-)
-
-func RegisterMetricsRoutes(r *frameworkrouter.Router, rc *metrics.RequestCounter) {
-    r.Handle("GET", "/debug/metrics", func(w http.ResponseWriter, r *http.Request, params map[string]string) {
-        snapshot := rc.Snapshot()
-
-        w.Header().Set("Content-Type", "application/json")
-        json.NewEncoder(w).Encode(map[string]any{
-            "uptime_seconds": rc.Uptime().Seconds(),
-            "requests":       snapshot,
-        })
-    })
-}</code></pre>
-                        </div>
-
-                        <p>In <code>startServer</code> inside <code>main.go</code>:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">rc := metrics.NewRequestCounter()
-
-r := frameworkrouter.New()
-r.Use(rc.Middleware) // count all requests
-
-router.RegisterAllRoutes(r)
-router.RegisterMetricsRoutes(r, rc)</code></pre>
-                        </div>
-
-                        <p>Now you are using a global concurrent-safe structure. Every request updates it via a mutex.</p>
-
-                        <h3>Example 2: Background Worker with Goroutines</h3>
-                        <p>Imagine you want to process jobs (e.g., send emails, generate PDFs) in the background without blocking HTTP handlers. A simple pattern is to use a channel and a dedicated worker goroutine.</p>
-
-                        <p>Create <code>internal/framework/jobs/queue.go</code>:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">package jobs
-
-import (
-    "context"
-    "log"
-    "time"
-)
-
-// Job is a generic background job.
-type Job struct {
-    Type string
-    Data map[string]any
-}
-
-type Queue struct {
-    jobs chan Job
-}
-
-// NewQueue creates a queue with a fixed buffer size.
-func NewQueue(buffer int) *Queue {
-    return &Queue{jobs: make(chan Job, buffer)}
-}
-
-// Start launches a worker that processes jobs until the context is cancelled.
-func (q *Queue) Start(ctx context.Context) {
-    go func() {
-        for {
-            select {
-            case job := &lt;-q.jobs:
-                process(job)
-            case &lt;-ctx.Done():
-                log.Println("jobs: shutting down worker")
-                return
-            }
-        }
-    }()
-}
-
-func (q *Queue) Enqueue(job Job) {
-    select {
-    case q.jobs &lt;- job:
-        // job accepted
-    default:
-        log.Println("jobs: queue is full, dropping job", job.Type)
-    }
-}
-
-func process(job Job) {
-    switch job.Type {
-    case "send_email":
-        log.Println("sending email to", job.Data["email"])
-        time.Sleep(500 * time.Millisecond)
-    default:
-        log.Println("unknown job type:", job.Type)
-    }
-}</code></pre>
-                        </div>
-
-                        <p>Wire this into your server start function:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">import (
-    "context"
-    "time"
-
-    "goBastion/internal/framework/jobs"
-)
-
-func startServer(cfg *config.Config) error {
-    ctx, cancel := context.WithCancel(context.Background())
-    defer cancel()
-
-    jobQueue := jobs.NewQueue(100)
-    jobQueue.Start(ctx)
-
-    r := frameworkrouter.New()
-    // ... middlewares, routes ...
-
-    // Example route that enqueues a job instead of doing heavy work synchronously:
-    r.Handle("POST", "/api/v1/notify", func(w http.ResponseWriter, r *http.Request, params map[string]string) {
-        _ = r.ParseForm()
-        email := r.FormValue("email")
-
-        jobQueue.Enqueue(jobs.Job{
-            Type: "send_email",
-            Data: map[string]any{
-                "email": email,
-            },
-        })
-
-        w.WriteHeader(http.StatusAccepted)
-        w.Write([]byte("Email job queued"))
-    })
-
-    srv := &http.Server{
-        Addr:         cfg.Server.Port,
-        Handler:      r,
-        ReadTimeout:  10 * time.Second,
-        WriteTimeout: 10 * time.Second,
-    }
-
-    return srv.ListenAndServe()
-}</code></pre>
-                        </div>
-
-                        <div class="callout tip">
-                            <p>This pattern gives you a very simple in-memory job system. In a “huge” production system you would replace the in-memory queue with something like Redis or a message broker, but the logic in your handlers can remain almost identical.</p>
-                        </div>
-
-                        <h3>Example 3: Mutex + Goroutines + Context in a Service</h3>
-                        <p>A more advanced pattern is using <code>context.Context</code> everywhere so you can cancel long-running operations when the HTTP request is cancelled or when the server is shutting down.</p>
-
-                        <p>Create <code>internal/app/reports/service.go</code>:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">package reports
-
-import (
-    "context"
-    "sync"
-    "time"
-)
-
-type Service struct {
-    mu      sync.Mutex
-    running bool
-}
-
-func NewService() *Service {
-    return &Service{}
-}
-
-// GenerateHeavyReport simulates a heavy report generation that can be cancelled.
-func (s *Service) GenerateHeavyReport(ctx context.Context) error {
-    s.mu.Lock()
-    if s.running {
-        s.mu.Unlock()
-        return nil // or error: already running
-    }
-    s.running = true
-    s.mu.Unlock()
-
-    defer func() {
-        s.mu.Lock()
-        s.running = false
-        s.mu.Unlock()
-    }()
-
-    // Simulate chunked work that checks for cancellation.
-    for i := 0; i &lt; 10; i++ {
-        select {
-        case &lt;-ctx.Done():
-            return ctx.Err()
-        default:
-            time.Sleep(300 * time.Millisecond)
-        }
-    }
-    return nil
-}</code></pre>
-                        </div>
-
-                        <p>Handler using that service:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">package router
-
-import (
-    "net/http"
-
-    "goBastion/internal/app/reports"
-    frameworkrouter "goBastion/internal/framework/router"
-)
-
-func RegisterReportRoutes(r *frameworkrouter.Router, service *reports.Service) {
-    r.Handle("POST", "/api/v1/reports/heavy", func(w http.ResponseWriter, r *http.Request, params map[string]string) {
-        ctx := r.Context()
-
-        if err := service.GenerateHeavyReport(ctx); err != nil {
-            http.Error(w, "report cancelled: "+err.Error(), http.StatusRequestTimeout)
-            return
-        }
-
-        w.Write([]byte("report generated successfully"))
-    })
-}</code></pre>
-                        </div>
-
-                        <p>With this pattern you are:</p>
-                        <ul>
-                            <li>Using a <code>sync.Mutex</code> to protect internal state (<code>running</code> flag).</li>
-                            <li>Using goroutines (inside the service) that can be cancelled via <code>context.Context</code>.</li>
-                            <li>Integrating all that cleanly into the goBastion routing/handler system.</li>
-                        </ul>
-                    </section>
-
-                    <section id="routing">
-                        <h2>Routing</h2>
-                        <p>The router is a core component of goBastion. It's a simple yet effective HTTP router that supports path parameters and middleware chaining. It's intentionally not a high-performance radix tree router, prioritizing clarity and simplicity.</p>
-                        <h3>Defining a Route</h3>
-                        <p>Routes are defined by associating an HTTP method and a path pattern with a handler function. The handler function has a specific signature:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">type HandlerFunc func(w http.ResponseWriter, r *http.Request, params map[string]string)</code></pre>
-                        </div>
-                        
-                        <div class="tabs-container my-6">
-                            <div class="tab-buttons flex border-b border-gray-800">
-                                <button class="tab-btn active" data-tab="simple">Simple</button>
-                                <button class="tab-btn" data-tab="with-param">With Parameter</button>
-                                <button class="tab-btn" data-tab="with-middleware">With Middleware</button>
-                            </div>
-                            <div class="tab-contents mt-4">
-                                <div class="tab-content active" data-tab-content="simple">
-                                    <div class="code-block">
-                                        <div class="code-header">
-                                            <span class="code-lang">go</span>
-                                            <button class="copy-btn">Copy</button>
-                                        </div>
-                                        <pre><code class="language-go">// GET /api/v1/ping
-r.Handle("GET", "/api/v1/ping", handlePing)</code></pre>
-                                    </div>
-                                </div>
-                                <div class="tab-content" data-tab-content="with-param">
-                                    <div class="code-block">
-                                        <div class="code-header">
-                                            <span class="code-lang">go</span>
-                                            <button class="copy-btn">Copy</button>
-                                        </div>
-                                        <pre><code class="language-go">// GET /api/v1/users/{id}
-r.Handle("GET", "/api/v1/users/{id}", handleGetUser)</code></pre>
-                                    </div>
-                                </div>
-                                <div class="tab-content" data-tab-content="with-middleware">
-                                    <div class="code-block">
-                                        <div class="code-header">
-                                            <span class="code-lang">go</span>
-                                            <button class="copy-btn">Copy</button>
-                                        </div>
-                                        <pre><code class="language-go">// GET /api/v1/auth/me (Protected)
-jwt := middleware.JWTMiddleware(secret)
-r.Handle("GET", "/api/v1/auth/me", jwt(handleMe))</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <h3>Path Parameters</h3>
-                        <p>Path parameters are defined using the <code>{paramName}</code> syntax. They are extracted from the URL and passed to your handler in the <code>params</code> map.</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">// Route registration
-r.Handle("GET", "/api/v1/users/{id}", handleGetUserByID)
-
-// Handler implementation
-func handleGetUserByID(w http.ResponseWriter, r *http.Request, params map[string]string) {
-    userID := params["id"] // Get the 'id' parameter from the map
-    
-    // ... logic to fetch user by ID ...
-
-    fmt.Fprintf(w, "Fetching user with ID: %s", userID)
-}
-</code></pre>
-                        </div>
-                        <h3>Grouping and Modularization</h3>
-                        <p>The recommended pattern is to group related routes into their own files and create a registration function for each group. This keeps your routing logic organized.</p>
-                        <p>For example, all user-related routes are in <code>internal/app/router/users.go</code> and registered via <code>RegisterUserRoutes</code>.</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">// internal/app/router/users.go
-package router
-
-import frameworkrouter "goBastion/internal/framework/router"
-
-func RegisterUserRoutes(r *frameworkrouter.Router) {
-    r.Handle("GET", "/api/v1/users", handleListUsers)
-    r.Handle("GET", "/api/v1/users/{id}", handleGetUser)
-    // ... other user routes
-}
-
-// cmd/server/main.go
-func startServer(cfg *config.Config) {
-    // ...
-    r := frameworkrouter.New()
-    router.RegisterUserRoutes(r) // Call the registration function
-    // ...
-}
-</code></pre>
-                        </div>
-                    </section>
-
-                    <section id="configuration">
-                        <h2>Configuration &amp; Environments</h2>
-                        <p>goBastion uses a hierarchical configuration system that makes it easy to manage settings for different environments.</p>
-                        <h3>Configuration Hierarchy</h3>
-                        <p>The configuration is loaded in the following order, with later sources overriding earlier ones:</p>
-                        <ol>
-                            <li><strong>Hardcoded Defaults:</strong> Sensible defaults are defined directly in the configuration structs in the code.</li>
-                            <li><strong>JSON File:</strong> The <code>config/config.json</code> file is loaded next. This is the primary place to store your project's base configuration.</li>
-                            <li><strong>Environment Variables:</strong> Finally, the application checks for environment variables. This is the recommended way to set sensitive information (like secrets) and environment-specific settings in production.</li>
-                        </ol>
-                        <h3>The <code>config.json</code> File</h3>
-                        <p>The main configuration file is <code>config/config.json</code>. It's structured into logical sections:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">json</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-json">{
-  "server": {
-    "port": ":8080",
-    "read_timeout_seconds": 10,
-    "write_timeout_seconds": 10,
-    "allowed_origins": "http://localhost:3000"
-  },
-  "database": {
-    "driver": "sqlite3",
-    "dsn": "file:api.db?_foreign_keys=on"
-  },
-  "security": {
-    "enable_csrf": false,
-    "enable_jwt": true,
-    "jwt_secret": "your-default-secret-key",
-    "access_token_minutes": 15,
-    "refresh_token_minutes": 1440
-  },
-  "rate_limit": {
-    "enabled": true,
-    "requests_per_minute": 100
-  }
-}
-</code></pre>
-                        </div>
-                        <h3>Environment Variables</h3>
-                        <p>To override a JSON value, use an environment variable with a specific format: <code>APP_SECTION_KEY</code>. For example, to override the server port and JWT secret in production:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">bash</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-bash">export APP_SERVER_PORT=":80"
-export APP_SECURITY_JWT_SECRET="a-very-strong-and-long-production-secret"
-./server serve</code></pre>
-                        </div>
-                        <div class="callout tip">
-                            <p><strong>Best Practice:</strong> Never commit secrets like <code>jwt_secret</code> to version control. Use a default, non-production value in <code>config.json</code> and override it with environment variables in your staging and production environments.</p>
-                        </div>
-                    </section>
-
-                    <section id="database">
-                        <h2>Database &amp; Models</h2>
-                        <p>goBastion includes a lightweight but powerful database layer designed to work with standard SQL drivers, with first-class support for SQLite.</p>
-                        <h3>Database Connection</h3>
-                        <p>The database connection is initialized at startup using the settings from your configuration. It uses the standard <code>database/sql</code> package, including connection pooling for performance.</p>
-                        <h3>Migrations</h3>
-                        <p>The framework includes a simple, automatic migration system. The necessary tables (like the <code>users</code> table) are created automatically when the database is initialized if they don't already exist. You can run this process manually using the CLI:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">bash</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-bash">go run ./cmd/server/ migrate</code></pre>
-                        </div>
-                        <h3>Defining Models</h3>
-                        <p>Models are simple Go structs defined in the <code>internal/app/models/</code> directory. They represent your application's data structures.</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">// internal/app/models/user.go
-package models
-
-import "time"
-
-type User struct {
-    ID           int       `json:"id"`
-    Name         string    `json:"name"`
-    Email        string    `json:"email"`
-    Role         string    `json:"role"`
-    PasswordHash string    `json:"-"` // Exclude from JSON responses
-    CreatedAt    time.Time `json:"created_at"`
-}
-
-// RegisterInput is used for decoding the registration request body
-type RegisterInput struct {
-    Name     string `json:"name"`
-    Email    string `json:"email"`
-    Password string `json:"password"`
-    Role     string `json:"role"`
-}
-</code></pre>
-                        </div>
-                        <h3>Querying the Database</h3>
-                        <p>goBastion provides two ways to interact with the database:</p>
-                        <h4>1. Helper Functions</h4>
-                        <p>The <code>internal/framework/db</code> package provides high-level helper functions for common CRUD operations on the <code>users</code> table, such as <code>db.CreateUser()</code> and <code>db.GetUserByEmail()</code>. These are the preferred way to perform simple queries as they abstract away the SQL.</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">input := models.RegisterInput{...}
-hashedPassword, _ := bcrypt.GenerateFromPassword(...)
-
-user, err := db.CreateUser(r.Context(), input, string(hashedPassword))
-if err != nil {
-    // Handle error
-}
-</code></pre>
-                        </div>
-                        <h4>2. Query Builder (QB)</h4>
-                        <p>For more complex queries, a simple, chainable query builder is provided in <code>internal/framework/db/qb.go</code>. It helps construct SQL queries programmatically, preventing SQL injection by using parameterized queries.</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">import "goBastion/internal/framework/db/qb"
-
-// ... in a handler ...
-query, args := qb.New("users").
-    Select("id", "name", "email").
-    Where("is_active = ? AND role = ?").
-    OrderBy("created_at DESC").
-    Limit(10).
-    Build()
-
-// query -> "SELECT id, name, email FROM users WHERE is_active = ? AND role = ? ORDER BY created_at DESC LIMIT 10"
-// args -> []interface{}{1, "user"}
-
-rows, err := db.GetDB().QueryContext(r.Context(), query, args...)
-// ... process rows ...</code></pre>
-                        </div>
-                    </section>
-
-                    <section id="authentication">
-                        <h2>Authentication &amp; Security</h2>
-                        <p>Security is a first-class citizen in goBastion. The framework comes with a complete, built-in authentication system and multiple layers of security.</p>
-                        <h3>JWT Authentication</h3>
-                        <p>The core authentication mechanism is based on JSON Web Tokens (JWT). The framework implements the access token/refresh token pattern.</p>
-                        <ul>
-                            <li><strong>Access Token:</strong> A short-lived token (default 15 mins) sent with each authenticated API request in the <code>Authorization: Bearer &lt;token&gt;</code> header.</li>
-                            <li><strong>Refresh Token:</strong> A long-lived token (default 24 hours) used to obtain a new access token without requiring the user to log in again.</li>
-                        </ul>
-                        <p>The entire JWT implementation is done using the standard library, with no external dependencies.</p>
-                        <h4>Authentication Flow:</h4>
-                        <ol>
-                            <li>User registers or logs in via <code>/api/v1/auth/register</code> or <code>/api/v1/auth/login</code>.</li>
-                            <li>The server validates credentials, generates an access and refresh token, and returns them to the client.</li>
-                            <li>The client stores these tokens securely. For API requests, it sends the access token in the Authorization header.</li>
-                            <li>The <code>JWTMiddleware</code> on the server intercepts the request, validates the token's signature and expiration, and injects user claims into the request context.</li>
-                            <li>If the access token expires, the client uses the refresh token to call <code>/api/v1/auth/refresh</code> to get a new pair of tokens.</li>
-                        </ol>
-                        <h3>Protecting Routes</h3>
-                        <p>Protecting a route is as simple as wrapping its handler with the JWT middleware. The framework provides a convenient way to do this during route registration.</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">// Get the middleware from the framework
-jwtMiddleware := middleware.JWTMiddleware(cfg.Security.JWTSecret)
-
-// Apply it to a handler
-r.Handle("GET", "/api/v1/auth/me", jwtMiddleware(handleGetCurrentUser))
-</code></pre>
-                        </div>
-                        <h3>Role-Based Access Control (RBAC)</h3>
-                        <p>goBastion includes middleware to restrict access to routes based on user roles. The <code>User</code> model has a <code>Role</code> field (e.g., "user", "admin").</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">// Get the middleware
-requireAdmin := middleware.RequireRole("admin")
-jwtMiddleware := middleware.JWTMiddleware(cfg.Security.JWTSecret)
-
-// Chain middlewares: JWT validation runs first, then role check
-r.Handle("GET", "/admin/dashboard", jwtMiddleware(requireAdmin(handleAdminDashboard)))
-</code></pre>
-                        </div>
-                        <h3>CSRF Protection</h3>
-                        <p>For web-based (non-API) routes that handle state-changing requests (POST, PUT, DELETE), the framework provides CSRF protection using the Double-Submit Cookie pattern. When enabled via <code>config.json</code>, the <code>CSRFMiddleware</code> will:</p>
-                        <ol>
-                            <li>On GET requests, provide a <code>csrf_token</code> cookie to the client.</li>
-                            <li>On POST/PUT/DELETE requests, require the client to send the same token value in both the cookie and an <code>X-CSRF-Token</code> header.</li>
-                        </ol>
-                        <p>This protection is crucial for the HTML-based login, registration, and admin panel pages.</p>
-                    </section>
-
-                    <section id="templating">
-                        <h2>Templating &amp; Views</h2>
-                        <p>While goBastion is excellent for building headless APIs, it also includes a simple and powerful server-side HTML template engine for building traditional web UIs or an admin panel.</p>
-                        <h3>Template Engine</h3>
-                        <p>The template engine is a custom implementation that uses a familiar, PHP-like syntax. It's designed for simplicity and security.</p>
-                        <ul>
-                            <li><strong>Syntax:</strong> Use <code>&lt;?= $variable ?&gt;</code> for escaped output and <code>&lt;?raw $variable ?&gt;</code> for unescaped output. Control structures like <code>&lt;? if condition ?&gt;...&lt;? end ?&gt;</code> and <code>&lt;? range $items ?&gt;...&lt;? end ?&gt;</code> are also supported.</li>
-                            <li><strong>Security:</strong> All output using the <code>&lt;?= ... ?&gt;</code> tag is automatically HTML-escaped to prevent XSS attacks.</li>
-                            <li><strong>Layouts and Partials:</strong> You can include partial templates within others using <code>&lt;? include "path/to/partial.html" .Data ?&gt;</code>, allowing for reusable components and layouts.</li>
-                        </ul>
+<!DOCTYPE html>
+
+<html lang="en" class="scroll-smooth">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>goBastion - Documentation</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://rsms.me/">
+
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+
+    <style>
+
+        :root { font-family: 'Inter', sans-serif; }
+
+        @supports (font-variation-settings: normal) {
+
+            :root { font-family: 'Inter var', sans-serif; }
+
+        }
+
+
+
+        /* Custom scrollbar for webkit browsers */
+
+        ::-webkit-scrollbar {
+
+            width: 8px;
+
+            height: 8px;
+
+        }
+
+        ::-webkit-scrollbar-track {
+
+            background: transparent;
+
+        }
+
+        ::-webkit-scrollbar-thumb {
+
+            background: #4b5563;
+
+            border-radius: 4px;
+
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+
+            background: #6b7280;
+
+        }
+
+
+
+        /* TOC active link */
+
+        .toc-link.active {
+
+            color: #60a5fa; /* blue-400 */
+
+            border-left-color: #60a5fa;
+
+            background-color: rgba(59, 130, 246, 0.08);
+
+        }
+
+
+
+        /* Typography base */
+
+        .prose {
+
+            color: #e5e7eb;
+
+            line-height: 1.7;
+
+            font-size: 1rem;
+
+        }
+
+        .prose h1 {
+
+            font-size: 2.25rem;
+
+            line-height: 2.5rem;
+
+            font-weight: 800;
+
+            color: #ffffff;
+
+            margin-bottom: 1rem;
+
+            border-bottom: 1px solid #374151;
+
+            padding-bottom: 0.5rem;
+
+        }
+
+        .prose h2 {
+
+            font-size: 1.75rem;
+
+            line-height: 2.1rem;
+
+            font-weight: 700;
+
+            color: #ffffff;
+
+            margin-top: 2.5rem;
+
+            margin-bottom: 1rem;
+
+            border-bottom: 1px solid #374151;
+
+            padding-bottom: 0.5rem;
+
+        }
+
+        .prose h3 {
+
+            font-size: 1.25rem;
+
+            line-height: 1.75rem;
+
+            font-weight: 600;
+
+            color: #f9fafb;
+
+            margin-top: 1.75rem;
+
+            margin-bottom: 0.75rem;
+
+        }
+
+        .prose p {
+
+            margin-bottom: 1rem;
+
+            color: #e5e7eb;
+
+        }
+
+        .prose a {
+
+            color: #60a5fa;
+
+            text-decoration: none;
+
+        }
+
+        .prose a:hover {
+
+            color: #93c5fd;
+
+            text-decoration: underline;
+
+        }
+
+        .prose strong {
+
+            color: #ffffff;
+
+            font-weight: 600;
+
+        }
+
+        .prose ul {
+
+            list-style-type: disc;
+
+            padding-left: 1.5rem;
+
+            margin-bottom: 1rem;
+
+        }
+
+        .prose ol {
+
+            list-style-type: decimal;
+
+            padding-left: 1.5rem;
+
+            margin-bottom: 1rem;
+
+        }
+
+        .prose li {
+
+            margin-bottom: 0.35rem;
+
+        }
+
+        .prose table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            margin-top: 0.75rem;
+
+            margin-bottom: 1rem;
+
+            font-size: 0.9rem;
+
+        }
+
+        .prose th {
+
+            background-color: #1f2937;
+
+            padding: 0.5rem;
+
+            border: 1px solid #374151;
+
+            font-weight: 600;
+
+            color: #f9fafb;
+
+        }
+
+        .prose td {
+
+            padding: 0.5rem;
+
+            border: 1px solid #374151;
+
+        }
+
+
+
+        /* Code & code-block styling */
+
+        .prose code {
+
+            background-color: #374151;
+
+            color: #93c5fd;
+
+            border-radius: 0.25rem;
+
+            padding: 0.05rem 0.3rem;
+
+            font-size: 0.875rem;
+
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+        }
+
+        .prose pre {
+
+            background-color: #020617;
+
+            border-radius: 0.75rem;
+
+            padding: 1rem;
+
+            font-size: 0.9rem;
+
+            overflow-x: auto;
+
+            margin-top: 0.5rem;
+
+            margin-bottom: 1rem;
+
+        }
+
+        .prose pre code {
+
+            background: transparent;
+
+            padding: 0;
+
+            border-radius: 0;
+
+            color: #e5e7eb;
+
+            font-size: 0.9rem;
+
+        }
+
+
+
+        .code-block {
+
+            margin-top: 1rem;
+
+            margin-bottom: 1.25rem;
+
+            border-radius: 0.75rem;
+
+            border: 1px solid #1f2937;
+
+            overflow: hidden;
+
+            background: radial-gradient(circle at top left, rgba(59,130,246,0.12), #020617);
+
+        }
+
+        .code-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0.35rem 0.85rem;
+
+            background-color: rgba(15,23,42,0.96);
+
+            border-bottom: 1px solid #1f2937;
+
+            font-size: 0.75rem;
+
+            letter-spacing: 0.07em;
+
+            text-transform: uppercase;
+
+            color: #9ca3af;
+
+        }
+
+        .code-lang {
+
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+        }
+
+        .copy-btn {
+
+            border-radius: 9999px;
+
+            border: 1px solid #4b5563;
+
+            padding: 0.15rem 0.75rem;
+
+            font-size: 0.75rem;
+
+            color: #e5e7eb;
+
+            background-color: #020617;
+
+            cursor: pointer;
+
+            transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+        }
+
+        .copy-btn:hover {
+
+            background-color: #111827;
+
+            border-color: #6b7280;
+
+        }
+
+
+
+        /* Callouts */
+
+        .callout {
+
+            padding: 1rem;
+
+            border-radius: 0.75rem;
+
+            margin-top: 1rem;
+
+            margin-bottom: 1rem;
+
+        }
+
+        .callout.tip {
+
+            background-color: rgba(37, 99, 235, 0.2);
+
+            border-left: 4px solid #60a5fa;
+
+        }
+
+        .callout.warning {
+
+            background-color: rgba(234, 179, 8, 0.2);
+
+            border-left: 4px solid #facc15;
+
+        }
+
+        .callout.danger {
+
+            background-color: rgba(248, 113, 113, 0.2);
+
+            border-left: 4px solid #f87171;
+
+        }
+
+
+
+        /* Tabs */
+
+        .tabs-container .tab-buttons {
+
+            background-color: #020617;
+
+            border-radius: 0.75rem 0.75rem 0 0;
+
+            overflow: hidden;
+
+        }
+
+        .tab-btn {
+
+            flex: 1;
+
+            padding: 0.5rem 0.75rem;
+
+            font-size: 0.85rem;
+
+            color: #9ca3af;
+
+            border-bottom: 2px solid transparent;
+
+            background-color: transparent;
+
+            cursor: pointer;
+
+            transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+
+        }
+
+        .tab-btn:hover {
+
+            background-color: rgba(31,41,55,0.75);
+
+        }
+
+        .tab-btn.active {
+
+            color: #60a5fa;
+
+            border-color: #60a5fa;
+
+            background-color: rgba(37, 99, 235, 0.25);
+
+        }
+
+        .tab-content {
+
+            display: none;
+
+        }
+
+        .tab-content.active {
+
+            display: block;
+
+        }
+
+
+
+        /* Collapsed sections */
+
+        section.collapsed h2 {
+
+            opacity: 0.85;
+
+        }
+
+
+
+        /* Body background */
+
+        body {
+
+            background: radial-gradient(circle at top left, rgba(59,130,246,0.08), transparent) fixed,
+
+                        radial-gradient(circle at bottom right, rgba(37,99,235,0.12), transparent) fixed,
+
+                        #ffffff;
+
+        }
+
+        .dark body {
+
+            background: radial-gradient(circle at top left, rgba(59,130,246,0.18), transparent) fixed,
+
+                        radial-gradient(circle at bottom right, rgba(37,99,235,0.25), transparent) fixed,
+
+                        #020617;
+
+        }
+
+    </style>
+
+    <script>
+
+        // Set theme on initial load to prevent FOUC
+
+        (function() {
+
+            const stored = localStorage.getItem('theme');
+
+            if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+
+                document.documentElement.classList.add('dark');
+
+            } else {
+
+                document.documentElement.classList.remove('dark');
+
+            }
+
+        })();
+
+    </script>
+
+</head>
+
+<body class="bg-white/95 dark:bg-gray-950/95 text-gray-700 dark:text-gray-300 antialiased min-h-screen">
+
+
+
+    <!-- Mobile Header -->
+
+    <header class="md:hidden bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm sticky top-0 z-30 flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-800">
+
+        <a href="#" class="text-xl font-bold text-gray-900 dark:text-white">goBastion</a>
+
+        <div class="flex items-center space-x-4">
+
+            <button id="theme-toggle-mobile" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg p-2">
+
+                <!-- Icon will be inserted by JS -->
+
+            </button>
+
+            <button id="menu-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg p-2">
+
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <div class="max-w-screen-2xl mx-auto flex">
+
+        <!-- Sidebar -->
+
+        <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 bg-gray-50/95 dark:bg-gray-900/95 backdrop-blur-sm border-r border-gray-200 dark:border-gray-800 p-6 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-40 md:z-10 md:flex flex-col">
+
+            <div class="flex items-center justify-between mb-6">
+
+                <a href="#" class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">goBastion</a>
+
+                <button id="theme-toggle-desktop" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg p-2 hidden md:block">
+
+                    <!-- Icon will be inserted by JS -->
+
+                </button>
+
+            </div>
+
+            <input type="search" id="search-input" placeholder="Search docs..." class="w-full px-3 py-2 mb-4 bg-white dark:bg-gray-800 rounded-md border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+
+            <nav id="toc" class="flex-grow overflow-y-auto -mx-3 pr-2 space-y-1 text-sm">
+
+                <!-- TOC will be generated by JS -->
+
+            </nav>
+
+            <div class="mt-4 text-xs text-gray-500 dark:text-gray-500 hidden md:block">
+
+                <p class="font-semibold uppercase tracking-wide mb-1 text-gray-400">Tip</p>
+
+                <p>Use the search box to quickly filter topics, or click on section titles to collapse/expand content.</p>
+
+            </div>
+
+        </aside>
+
+
+
+        <!-- Main Content -->
+
+        <main class="w-full md:pl-72">
+
+            <div class="max-w-4xl mx-auto px-6 md:px-10 py-10">
+
+                <article id="documentation-content" class="prose max-w-none">
+
+                    
+
+                    <!-- Hero + Overview -->
+
+                    <section id="overview" class="not-prose mb-10">
+
+                        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+
+                            goBastion Framework
+
+                        </h1>
+
+                        <p class="mt-4 text-xl text-gray-600 dark:text-gray-400 max-w-2xl">
+
+                            A production-ready Go web framework built from the standard library. No magic, full control.
+
+                        </p>
+
+                        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 my-8">
+
+                            <a href="#quickstart" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 shadow-sm no-underline">
+
+                                Get Started
+
+                            </a>
+
+                            <a href="#cli-reference" class="inline-flex items-center justify-center px-5 py-3 border text-base font-medium rounded-md text-blue-700 bg-blue-50 hover:bg-blue-100 dark:text-white dark:bg-gray-800 dark:hover:bg-gray-700 border-blue-200/70 dark:border-gray-700 no-underline">
+
+                                CLI Reference
+
+                            </a>
+
+                        </div>
+
+                        <p class="text-lg text-gray-700 dark:text-gray-300 max-w-3xl">
+
+                            goBastion is a minimalist, yet powerful web framework for Go, designed for developers who value clarity, performance, and control.
+
+                            Unlike frameworks that rely heavily on third-party libraries and "magic," goBastion is built almost entirely on Go's robust standard
+
+                            library. It provides a solid foundation for building secure, scalable web applications and APIs, drawing inspiration from the developer
+
+                            experience of frameworks like FastAPI and Django, but with the raw power and simplicity of native Go.
+
+                        </p>
+
+                    </section>
+
+
+
+                    <!-- Introduction -->
+
+                    <section id="introduction">
+
+                        <h2>What is goBastion?</h2>
+
+                        <p>goBastion is both a web framework and a project generator. At its core, it's a collection of well-structured Go packages that provide essential web development features: a powerful router, a flexible middleware system, a simple database layer, a secure authentication module, and more. It's designed to be a "batteries-included" framework, but where you can easily inspect and change every single battery.</p>
+
+                        <p>The accompanying <code>go-bastion</code> CLI tool bootstraps new projects from the framework template, setting up a clean, idiomatic project structure so you can start developing your business logic immediately.</p>
+
+                        <h3>When to Use It</h3>
+
+                        <ul>
+
+                            <li>When you want a production-ready starting point without sacrificing control.</li>
+
+                            <li>When you want to learn how a web framework is built from the ground up using only the standard library.</li>
+
+                            <li>For building high-performance APIs and web services where dependencies should be minimal.</li>
+
+                            <li>When you appreciate clean architecture and a clear separation between framework and application code.</li>
+
+                        </ul>
+
+                        <h3>When Not to Use It</h3>
+
+                        <ul>
+
+                            <li>If you need a massive ecosystem of third-party plugins and extensions out of the box.</li>
+
+                            <li>If you prefer a full-featured ORM and want to avoid writing SQL.</li>
+
+                            <li>If you are looking for a visual, drag-and-drop admin panel builder.</li>
+
+                        </ul>
+
+                    </section>
+
+
+
+                    <!-- Philosophy & Design Goals -->
+
+                    <section id="philosophy">
+
+                        <h2>Philosophy &amp; Design Goals</h2>
+
+                        <p>The development of goBastion is guided by a few core principles:</p>
+
+                        <ul>
+
+                            <li><strong>Standard Library First:</strong> Leverage the power and stability of Go's standard library wherever possible. This reduces dependency bloat, improves security, and makes the codebase easier to understand and maintain. The only external dependencies are for the database driver (<code>go-sqlite3</code>) and password hashing (<code>bcrypt</code>).</li>
+
+                            <li><strong>Clarity Over Magic:</strong> The framework should be transparent. Developers should be able to easily trace a request from the router to the handler and understand every step in between. There are no hidden global states or complex reflection-based mechanics.</li>
+
+                            <li><strong>Security by Default:</strong> Production-grade security features like CSRF protection, JWT authentication, security headers, and rate limiting are built-in and enabled with sensible defaults. The architecture promotes secure coding practices like parameterized SQL queries and context-aware handlers.</li>
+
+                            <li><strong>Developer Experience (DX):</strong> While minimalist, the framework is designed to be pleasant to use. Features like the project generator, modular routing, and a clear project structure are all aimed at making development fast and enjoyable.</li>
+
+                            <li><strong>Performance:</strong> By sticking close to the standard library and avoiding unnecessary abstractions, goBastion is designed to be fast. It embraces Go's concurrency model to handle requests efficiently.</li>
+
+                        </ul>
+
+                    </section>
+
+
+
+                    <!-- Installation -->
+
+                    <section id="installation">
+
+                        <h2>Installation</h2>
+
+                        <p>Getting started with goBastion involves two steps: installing the project generator CLI and then using it to create your new application.</p>
+
+                        <h3>Prerequisites</h3>
+
+                        <p>You need to have Go installed on your system (version 1.18 or higher is recommended).</p>
+
+                        <h3>1. Install the CLI</h3>
+
+                        <p>The <code>go-bastion</code> CLI tool automates the creation of new projects. Install it globally by running the following command from your terminal:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">bash</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-bash">go install github.com/AlejandroMBJS/goBastion/cmd/go-bastion@latest</code></pre>
+
+                        </div>
+
+                        <p>This will download, compile, and install the <code>go-bastion</code> executable in your Go binary path (e.g., <code>$GOPATH/bin</code> or <code>$HOME/go/bin</code>).</p>
+
+                        <h3>2. Create a New Project</h3>
+
+                        <p>Once the CLI is installed, you can create a new project. Navigate to the directory where you want your project to live and run:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">bash</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-bash">go-bastion my-new-app</code></pre>
+
+                        </div>
+
+                        <p>Replace <code>my-new-app</code> with your desired project name. The CLI will perform the following steps:</p>
+
+                        <ul>
+
+                            <li>Clone the goBastion template repository.</li>
+
+                            <li>Remove the original Git history for a fresh start.</li>
+
+                            <li>Update the Go module name throughout the project.</li>
+
+                            <li>Run <code>go mod tidy</code> to ensure dependencies are clean.</li>
+
+                        </ul>
+
+                        <p>Your new, ready-to-develop application will be in the <code>my-new-app</code> directory.</p>
+
+                    </section>
+
+
+
+                    <!-- Project Structure -->
+
+                    <section id="project-structure">
+
+                        <h2>Project Structure</h2>
+
+                        <p>goBastion enforces a clean, layered architecture. When you generate a new project, you'll see the following structure:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">plaintext</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-plaintext">my-new-app/
+
+├── cmd/
+
+│   └── server/
+
+│       └── main.go           # Application entry point, CLI dispatcher
+
+├── config/
+
+│   └── config.json           # Main configuration file
+
+├── internal/
+
+│   ├── app/                  # YOUR application code lives here
+
+│   │   ├── models/
+
+│   │   └── router/
+
+│   └── framework/
+
+│       ├── admin/
+
+│       ├── config/
+
+│       ├── db/
+
+│       ├── docs/
+
+│       ├── middleware/
+
+│       ├── router/
+
+│       ├── security/
+
+│       └── view/
+
+├── static/
+
+│   └── css/
+
+├── templates/
+
+│   ├── admin/
+
+│   └── auth/
+
+├── .air.toml                 # Live-reloading configuration
+
+├── Dockerfile                # For building production Docker images
+
+├── go.mod                    # Go module definition
+
+└── README.md                 # Your project's README
+
+</code></pre>
+
+                        </div>
+
+                        <h3>Key Directories</h3>
+
+                        <ul>
+
+                            <li><code>/cmd/server/main.go</code>: This is the main entry point for your application. It initializes all the framework components (config, DB, router) and also acts as the dispatcher for all CLI commands (like <code>serve</code>, <code>migrate</code>, etc.).</li>
+
+                            <li><code>/internal/app/</code>: This is where you'll spend most of your time. It's your application's business logic, completely separate from the framework's core. You'll add your models and route handlers here.</li>
+
+                            <li><code>/internal/framework/</code>: This is the heart of goBastion. It contains all the reusable, domain-agnostic components like the router, database helpers, and security features. You typically won't need to modify files here unless you're extending the framework itself.</li>
+
+                            <li><code>/config/config.json</code>: A central place to manage your application's configuration for different environments.</li>
+
+                            <li><code>/templates/</code>: HTML templates for your application's UI, including the admin panel and authentication pages.</li>
+
+                        </ul>
+
+                    </section>
+
+
+
+                    <!-- Quickstart Tutorial -->
+
+                    <section id="quickstart">
+
+                        <h2>Quickstart Tutorial</h2>
+
+                        <p>Let's build and run a new application in under 5 minutes.</p>
+
+                        <h3>1. Create the Project</h3>
+
+                        <p>First, make sure you've installed the CLI (see Installation section). Then, create the project:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">bash</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-bash"># Create a new project named "myapi"
+
+go-bastion myapi
+
+
+
+# Navigate into the new directory
+
+cd myapi</code></pre>
+
+                        </div>
+
+                        <h3>2. Run the Development Server</h3>
+
+                        <p>The generated project includes a <code>serve</code> command to start the web server. It uses <code>.air.toml</code> for live-reloading, so the server will automatically restart when you change a file.</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">bash</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-bash"># This command will start the server on http://localhost:8080
+
+go run ./cmd/server/ serve</code></pre>
+
+                        </div>
+
+                        <h3>3. Explore the API Docs</h3>
+
+                        <p>goBastion automatically generates OpenAPI 3.0 documentation for your API. Open your browser and navigate to:</p>
+
+                        <p><a href="http://localhost:8080/docs" target="_blank">http://localhost:8080/docs</a></p>
+
+                        <p>You'll see an interactive Swagger UI where you can explore and test all the built-in API endpoints.</p>
+
+                        <h3>4. Create Your First Route</h3>
+
+                        <p>Let's add a simple "Hello World" endpoint.</p>
+
+                        <p><strong>Step 1: Create a new handler file.</strong></p>
+
+                        <p>Create <code>internal/app/router/greeting.go</code>:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">package router
+
+
+
+import (
+
+    "encoding/json"
+
+    "net/http"
+
+
+
+    "goBastion/internal/framework/router"
+
+)
+
+
+
+// RegisterGreetingRoutes adds our new greeting route
+
+func RegisterGreetingRoutes(r *router.Router) {
+
+    r.Handle("GET", "/api/v1/hello", handleHello)
+
+}
+
+
+
+// handleHello is our new handler
+
+func handleHello(w http.ResponseWriter, r *http.Request, params map[string]string) {
+
+    w.Header().Set("Content-Type", "application/json")
+
+    json.NewEncoder(w).Encode(map[string]string{
+
+        "message": "Hello, World!",
+
+    })
+
+}
+
+</code></pre>
+
+                        </div>
+
+                        <p><strong>Step 2: Register the new route.</strong></p>
+
+                        <p>Open <code>cmd/server/main.go</code> and find the section where routes are registered. Add a call to your new registration function:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">// In cmd/server/main.go, inside the startServer function...
+
+
+
+// ... after router.RegisterUserRoutes(r)
+
+router.RegisterGreetingRoutes(r) // Add this line
+
+</code></pre>
+
+                        </div>
+
+                        <p>Because you're using live-reloading, the server will restart automatically. Now you can test your new endpoint:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">bash</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-bash">curl http://localhost:8080/api/v1/hello</code></pre>
+
+                        </div>
+
+                        <p>You should see the response:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">json</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-json">{
+
+  "message": "Hello, World!"
+
+}
+
+</code></pre>
+
+                        </div>
+
+                        <p>Congratulations! You've just extended the API.</p>
+
+                    </section>
+
+
+
+                    <!-- Beginner Friendly From Scratch -->
+
+                    <section id="beginner-guide">
+
+                        <h2>Beginner-Friendly Guide: From Zero to Your First API</h2>
+
+                        <p>This section is for you if you have <strong>never written code before</strong> or you feel completely new to Go and web development. We'll walk step-by-step, assuming nothing.</p>
+
+
+
+                        <h3>What You Need Installed</h3>
+
+                        <ol>
+
+                            <li><strong>Go</strong>: Go is the programming language. Download and install it from the official website.</li>
+
+                            <li><strong>A Terminal</strong>: On Windows you can use PowerShell; on macOS or Linux you can use the default Terminal.</li>
+
+                            <li><strong>A Code Editor</strong>: Visual Studio Code is a good free option.</li>
+
+                        </ol>
+
+
+
+                        <div class="callout tip">
+
+                            <p><strong>If you can type commands and save a file, you can do this.</strong> You don't need to understand everything at first. Just follow the steps and see what happens.</p>
+
+                        </div>
+
+
+
+                        <h3>Step 1: Create a Folder</h3>
+
+                        <p>Pick a folder where you want your projects to live, for example <code>C:\projects</code> on Windows or <code>~/projects</code> on macOS/Linux. Inside, create a new folder:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">bash</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-bash">mkdir my-first-bastion
+
+cd my-first-bastion</code></pre>
+
+                        </div>
+
+
+
+                        <h3>Step 2: Initialize a Go Module</h3>
+
+                        <p>A Go module is like the "container" for your project. Run:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">bash</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-bash">go mod init my-first-bastion</code></pre>
+
+                        </div>
+
+                        <p>This creates a file called <code>go.mod</code> that describes your project.</p>
+
+
+
+                        <h3>Step 3: Install and Run goBastion CLI</h3>
+
+                        <p>Now install the CLI (you only do this once per machine):</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">bash</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-bash">go install github.com/AlejandroMBJS/goBastion/cmd/go-bastion@latest</code></pre>
+
+                        </div>
+
+                        <p>Then generate your project (this will create a lot of folders and files for you):</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">bash</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-bash">go-bastion app
+
+cd app</code></pre>
+
+                        </div>
+
+
+
+                        <h3>Step 4: Run the Server</h3>
+
+                        <p>To start your first server:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">bash</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-bash">go run ./cmd/server/ serve</code></pre>
+
+                        </div>
+
+                        <p>If everything is OK, you will see log messages in the terminal. Now open your browser and go to:</p>
+
+                        <p><a href="http://localhost:8080" target="_blank">http://localhost:8080</a></p>
+
+
+
+                        <div class="callout tip">
+
+                            <p><strong>Beginner check:</strong> If you see any page (even a simple one), you already made a web server run. That's a big deal.</p>
+
+                        </div>
+
+
+
+                        <h3>Step 5: Your First Simple “Hello” Handler</h3>
+
+                        <p>Now let's build something tiny and obvious, so you can see how Go code looks.</p>
+
+                        <ol>
+
+                            <li>Open your editor (VS Code).</li>
+
+                            <li>In the project, create the file <code>internal/app/router/hello_beginner.go</code>.</li>
+
+                            <li>Paste this code:</li>
+
+                        </ol>
+
+
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">package router
+
+
+
+import (
+
+    "fmt"
+
+    "net/http"
+
+
+
+    frameworkrouter "goBastion/internal/framework/router"
+
+)
+
+
+
+// RegisterBeginnerRoutes adds very simple routes for people learning
+
+func RegisterBeginnerRoutes(r *frameworkrouter.Router) {
+
+    r.Handle("GET", "/beginner/hello", handleBeginnerHello)
+
+}
+
+
+
+// handleBeginnerHello sends plain text back to the browser.
+
+func handleBeginnerHello(w http.ResponseWriter, r *http.Request, params map[string]string) {
+
+    fmt.Fprintln(w, "Hello beginner! This is your first goBastion route.")
+
+}</code></pre>
+
+                        </div>
+
+
+
+                        <h3>Step 6: Register It in main.go</h3>
+
+                        <p>Open <code>cmd/server/main.go</code> and look for where other routes are registered (for example, <code>router.RegisterUserRoutes</code>). Add this line somewhere near them:</p>
+
+
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">router.RegisterBeginnerRoutes(r)</code></pre>
+
+                        </div>
+
+
+
+                        <p>Save the file, make sure the server is running (or restart it), and now open:</p>
+
+                        <p><a href="http://localhost:8080/beginner/hello" target="_blank">http://localhost:8080/beginner/hello</a></p>
+
+
+
+                        <p>You should see the message:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">text</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code>Hello beginner! This is your first goBastion route.</code></pre>
+
+                        </div>
+
+
+
+                        <div class="callout tip">
+
+                            <p><strong>What just happened?</strong> The browser made an HTTP request, goBastion router decided which handler to call, and your function wrote text back to the browser.</p>
+
+                        </div>
+
+
+
+                        <h3>Step 7: Beginner JSON Example</h3>
+
+                        <p>Now let's return JSON, which is what APIs typically send:</p>
+
+
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">package router
+
+
+
+import (
+
+    "encoding/json"
+
+    "net/http"
+
+
+
+    frameworkrouter "goBastion/internal/framework/router"
+
+)
+
+
+
+func RegisterBeginnerJSONRoutes(r *frameworkrouter.Router) {
+
+    r.Handle("GET", "/beginner/json", handleBeginnerJSON)
+
+}
+
+
+
+func handleBeginnerJSON(w http.ResponseWriter, r *http.Request, params map[string]string) {
+
+    w.Header().Set("Content-Type", "application/json")
+
+
+
+    // This is the data we want to send
+
+    response := map[string]string{
+
+        "status":  "ok",
+
+        "message": "JSON is just a structured way to send data.",
+
+    }
+
+
+
+    // Convert Go map to JSON and write it to the response
+
+    json.NewEncoder(w).Encode(response)
+
+}</code></pre>
+
+                        </div>
+
+
+
+                        <p>Don't forget to call <code>RegisterBeginnerJSONRoutes</code> in <code>main.go</code> too, just like before. Then go to:</p>
+
+                        <p><a href="http://localhost:8080/beginner/json" target="_blank">http://localhost:8080/beginner/json</a></p>
+
+
+
+                        <h3>Step 8: Beginner Form + HTML Example</h3>
+
+                        <p>Finally, let's serve a very simple HTML page with a form and read its value.</p>
+
+
+
+                        <p>1. Create a template file <code>templates/beginner/form.html</code>:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">html</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-html">&lt;!doctype html&gt;
+
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;title&gt;Beginner Form&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Beginner Form&lt;/h1&gt;
+    &lt;form method="POST" action="/beginner/form"&gt;
+      &lt;label&gt;Your name:
+        &lt;input type="text" name="name"&gt;
+      &lt;/label&gt;
+      &lt;button type="submit"&gt;Send&lt;/button&gt;
+    &lt;/form&gt;
+
+    go:: if .Name != ""
+      &lt;p&gt;Hello @.Name! Nice to meet you.&lt;/p&gt;
+    ::end
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+                        </div>
+
+
+
+                        <p>2. Now create a handler that renders that template. In <code>internal/app/router/beginner_templates.go</code>:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">package router
+
+
+
+import (
+
+    "net/http"
+
+
+
+    "goBastion/internal/framework/view"
+
+    frameworkrouter "goBastion/internal/framework/router"
+
+)
+
+
+
+func RegisterBeginnerTemplateRoutes(r *frameworkrouter.Router, engine *view.Engine) {
+
+    r.Handle("GET", "/beginner/form", func(w http.ResponseWriter, r *http.Request, params map[string]string) {
+
+        engine.Render(w, "beginner/form", map[string]any{
+
+            "Name": "",
+
+        })
+
+    })
+
+
+
+    r.Handle("POST", "/beginner/form", func(w http.ResponseWriter, r *http.Request, params map[string]string) {
+
+        _ = r.ParseForm()
+
+        name := r.FormValue("name")
+
+
+
+        engine.Render(w, "beginner/form", map[string]any{
+
+            "Name": name,
+
+        })
+
+    })
+
+}</code></pre>
+
+                        </div>
+
+
+
+                        <p>In <code>main.go</code>, pass the already-created template engine (check how admin/auth routes do it) to <code>RegisterBeginnerTemplateRoutes</code>. Then go to:</p>
+
+                        <p><a href="http://localhost:8080/beginner/form" target="_blank">http://localhost:8080/beginner/form</a></p>
+
+
+
+                        <div class="callout tip">
+
+                            <p>With these three beginner examples (plain text, JSON, and HTML form), a complete newbie can see how Go, HTTP and goBastion work together from scratch.</p>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- Mid Level Examples -->
+
+                    <section id="intermediate-examples">
+
+                        <h2>Intermediate Examples: Validations, Middleware and Modular Design</h2>
+
+                        <p>Once you are comfortable with the beginner examples, it’s time to write more realistic APIs. In this section you will:</p>
+
+                        <ul>
+
+                            <li>Validate and decode JSON from the request body.</li>
+
+                            <li>Use middleware to log and measure requests.</li>
+
+                            <li>Organize your code into modules that feel clean in large projects.</li>
+
+                        </ul>
+
+
+
+                        <h3>Example 1: Validating JSON Input for a “Todo” API</h3>
+
+                        <p>Create <code>internal/app/models/todo.go</code>:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">package models
+
+
+
+type Todo struct {
+
+    ID      int    `json:"id"`
+
+    Title   string `json:"title"`
+
+    Done    bool   `json:"done"`
+
+}
+
+
+
+type CreateTodoInput struct {
+
+    Title string `json:"title"`
+
+}</code></pre>
+
+                        </div>
+
+
+
+                        <p>Now create <code>internal/app/router/todos.go</code>:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">package router
+
+
+
+import (
+
+    "encoding/json"
+
+    "net/http"
+
+    "strings"
+
+
+
+    "goBastion/internal/app/models"
+
+    "goBastion/internal/framework/db"
+
+    frameworkrouter "goBastion/internal/framework/router"
+
+)
+
+
+
+func RegisterTodoRoutes(r *frameworkrouter.Router) {
+
+    r.Handle("POST", "/api/v1/todos", handleCreateTodo)
+
+}
+
+
+
+// handleCreateTodo shows simple JSON decoding + validation error handling.
+
+func handleCreateTodo(w http.ResponseWriter, r *http.Request, params map[string]string) {
+
+    if r.Method != http.MethodPost {
+
+        http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+
+        return
+
+    }
+
+
+
+    var input models.CreateTodoInput
+
+    if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+
+        http.Error(w, "invalid JSON body", http.StatusBadRequest)
+
+        return
+
+    }
+
+
+
+    input.Title = strings.TrimSpace(input.Title)
+
+    if input.Title == "" {
+
+        http.Error(w, "title is required", http.StatusBadRequest)
+
+        return
+
+    }
+
+
+
+    todo, err := db.CreateTodo(r.Context(), input) // Suppose you add this helper
+
+    if err != nil {
+
+        http.Error(w, "could not create todo", http.StatusInternalServerError)
+
+        return
+
+    }
+
+
+
+    w.Header().Set("Content-Type", "application/json")
+
+    w.WriteHeader(http.StatusCreated)
+
+    json.NewEncoder(w).Encode(todo)
+
+}</code></pre>
+
+                        </div>
+
+
+
+                        <p>In <code>db</code> you could have something like this (simplified):</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">package db
+
+
+
+import (
+
+    "context"
+
+
+
+    "goBastion/internal/app/models"
+
+)
+
+
+
+func CreateTodo(ctx context.Context, input models.CreateTodoInput) (*models.Todo, error) {
+
+    // Example using Exec + LastInsertId, or QueryRow + RETURNING ...
+
+    // For SQLite:
+
+    res, err := getDB().ExecContext(ctx,
+
+        "INSERT INTO todos (title, done) VALUES (?, ?)",
+
+        input.Title,
+
+        false,
+
+    )
+
+    if err != nil {
+
+        return nil, err
+
+    }
+
+
+
+    id, err := res.LastInsertId()
+
+    if err != nil {
+
+        return nil, err
+
+    }
+
+
+
+    return &models.Todo{
+
+        ID:    int(id),
+
+        Title: input.Title,
+
+        Done:  false,
+
+    }, nil
+
+}</code></pre>
+
+                        </div>
+
+
+
+                        <h3>Example 2: Simple Logging & Timing Middleware</h3>
+
+                        <p>goBastion already has its own middleware system, but you can write your own very easily. This example logs the method, path and duration of each request.</p>
+
+
+
+                        <p>Create <code>internal/framework/middleware/logging.go</code> (if it does not exist):</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">package middleware
+
+
+
+import (
+
+    "log"
+
+    "net/http"
+
+    "time"
+
+
+
+    "goBastion/internal/framework/router"
+
+)
+
+
+
+// LoggingMiddleware wraps handlers to log method, path and duration.
+
+func LoggingMiddleware(next router.Handler) router.Handler {
+
+    return func(w http.ResponseWriter, r *http.Request, params map[string]string) {
+
+        start := time.Now()
+
+        next(w, r, params)
+
+        duration := time.Since(start)
+
+        log.Printf("%s %s took %s", r.Method, r.URL.Path, duration)
+
+    }
+
+}</code></pre>
+
+                        </div>
+
+
+
+                        <p>Then in your server setup (inside <code>startServer</code> in <code>main.go</code>):</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">r := frameworkrouter.New()
+
+
+
+// Wrap all routes with logging
+
+r.Use(middleware.LoggingMiddleware)
+
+
+
+// Then register routes
+
+router.RegisterUserRoutes(r)
+
+router.RegisterTodoRoutes(r)
+
+// ... etc.</code></pre>
+
+                        </div>
+
+
+
+                        <h3>Example 3: Organizing by Feature (Module-Based)</h3>
+
+                        <p>For intermediate projects, it’s useful to think in “features” or “modules”. For example:</p>
+
+                        <ul>
+
+                            <li><code>auth/</code> for authentication.</li>
+
+                            <li><code>todos/</code> for todo management.</li>
+
+                            <li><code>billing/</code> for payments.</li>
+
+                        </ul>
+
+
+
+                        <p>Within <code>internal/app/</code> you can create:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">plaintext</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-plaintext">internal/app/
+
+├── auth/
+
+│   ├── handlers.go
+
+│   └── service.go
+
+├── todos/
+
+│   ├── handlers.go
+
+│   ├── service.go
+
+│   └── repository.go
+
+└── router/
+
+    └── routes.go</code></pre>
+
+                        </div>
+
+
+
+                        <p>Your <code>router/routes.go</code> becomes the central place to register all feature routes:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">package router
+
+
+
+import (
+
+    frameworkrouter "goBastion/internal/framework/router"
+
+    "goBastion/internal/app/auth"
+
+    "goBastion/internal/app/todos"
+
+)
+
+
+
+func RegisterAllRoutes(r *frameworkrouter.Router) {
+
+    auth.RegisterAuthRoutes(r)
+
+    todos.RegisterTodoRoutes(r)
+
+}</code></pre>
+
+                        </div>
+
+
+
+                        <p>This pattern scales nicely as your project grows.</p>
+
+                    </section>
+
+
+
+                    <!-- Advanced / Senior Examples -->
+
+                    <section id="advanced-concurrency">
+
+                        <h2>Advanced: Concurrency, goroutines and Mutex for Big Projects</h2>
+
+                        <p>Once you are comfortable with routing, JSON and middleware, the next step is to harness Go’s biggest superpower: <strong>concurrency</strong>. In big projects you often need to:</p>
+
+                        <ul>
+
+                            <li>Run background jobs.</li>
+
+                            <li>Share in-memory state safely between requests.</li>
+
+                            <li>Collect metrics or rate limit traffic in a concurrent-safe way.</li>
+
+                        </ul>
+
+
+
+                        <div class="callout warning">
+
+                            <p><strong>Important:</strong> Never share mutable data between goroutines without some form of synchronization (like <code>sync.Mutex</code>) or using channels. Otherwise you get data races and undefined behavior.</p>
+
+                        </div>
+
+
+
+                        <h3>Example 1: In-Memory Request Counter with Mutex</h3>
+
+                        <p>Suppose you want a simple in-memory counter of how many requests hit each path, only for debugging or metrics.</p>
+
+
+
+                        <p>Create <code>internal/framework/metrics/requests.go</code>:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">package metrics
+
+
+
+import (
+
+    "net/http"
+
+    "sync"
+
+    "time"
+
+
+
+    "goBastion/internal/framework/router"
+
+)
+
+
+
+type RequestCounter struct {
+
+    mu       sync.Mutex
+
+    counts   map[string]int
+
+    started  time.Time
+
+}
+
+
+
+func NewRequestCounter() *RequestCounter {
+
+    return &RequestCounter{
+
+        counts:  make(map[string]int),
+
+        started: time.Now(),
+
+    }
+
+}
+
+
+
+func (rc *RequestCounter) Middleware(next router.Handler) router.Handler {
+
+    return func(w http.ResponseWriter, r *http.Request, params map[string]string) {
+
+        path := r.URL.Path
+
+
+
+        rc.mu.Lock()
+
+        rc.counts[path]++
+
+        rc.mu.Unlock()
+
+
+
+        next(w, r, params)
+
+    }
+
+}
+
+
+
+// Snapshot returns a copy of the metrics for safe reading.
+
+func (rc *RequestCounter) Snapshot() map[string]int {
+
+    rc.mu.Lock()
+
+    defer rc.mu.Unlock()
+
+
+
+    out := make(map[string]int, len(rc.counts))
+
+    for k, v := range rc.counts {
+
+        out[k] = v
+
+    }
+
+    return out
+
+}
+
+
+
+func (rc *RequestCounter) Uptime() time.Duration {
+
+    return time.Since(rc.started)
+
+}</code></pre>
+
+                        </div>
+
+
+
+                        <p>Then expose a debug endpoint to read those metrics safely:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">package router
+
+
+
+import (
+
+    "encoding/json"
+
+    "net/http"
+
+
+
+    "goBastion/internal/framework/metrics"
+
+    frameworkrouter "goBastion/internal/framework/router"
+
+)
+
+
+
+func RegisterMetricsRoutes(r *frameworkrouter.Router, rc *metrics.RequestCounter) {
+
+    r.Handle("GET", "/debug/metrics", func(w http.ResponseWriter, r *http.Request, params map[string]string) {
+
+        snapshot := rc.Snapshot()
+
+
+
+        w.Header().Set("Content-Type", "application/json")
+
+        json.NewEncoder(w).Encode(map[string]any{
+
+            "uptime_seconds": rc.Uptime().Seconds(),
+
+            "requests":       snapshot,
+
+        })
+
+    })
+
+}</code></pre>
+
+                        </div>
+
+
+
+                        <p>In <code>startServer</code> inside <code>main.go</code>:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">rc := metrics.NewRequestCounter()
+
+
+
+r := frameworkrouter.New()
+
+r.Use(rc.Middleware) // count all requests
+
+
+
+router.RegisterAllRoutes(r)
+
+router.RegisterMetricsRoutes(r, rc)</code></pre>
+
+                        </div>
+
+
+
+                        <p>Now you are using a global concurrent-safe structure. Every request updates it via a mutex.</p>
+
+
+
+                        <h3>Example 2: Background Worker with Goroutines</h3>
+
+                        <p>Imagine you want to process jobs (e.g., send emails, generate PDFs) in the background without blocking HTTP handlers. A simple pattern is to use a channel and a dedicated worker goroutine.</p>
+
+
+
+                        <p>Create <code>internal/framework/jobs/queue.go</code>:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">package jobs
+
+
+
+import (
+
+    "context"
+
+    "log"
+
+    "time"
+
+)
+
+
+
+// Job is a generic background job.
+
+type Job struct {
+
+    Type string
+
+    Data map[string]any
+
+}
+
+
+
+type Queue struct {
+
+    jobs chan Job
+
+}
+
+
+
+// NewQueue creates a queue with a fixed buffer size.
+
+func NewQueue(buffer int) *Queue {
+
+    return &Queue{jobs: make(chan Job, buffer)}
+
+}
+
+
+
+// Start launches a worker that processes jobs until the context is cancelled.
+
+func (q *Queue) Start(ctx context.Context) {
+
+    go func() {
+
+        for {
+
+            select {
+
+            case job := &lt;-q.jobs:
+
+                process(job)
+
+            case &lt;-ctx.Done():
+
+                log.Println("jobs: shutting down worker")
+
+                return
+
+            }
+
+        }
+
+    }()
+
+}
+
+
+
+func (q *Queue) Enqueue(job Job) {
+
+    select {
+
+    case q.jobs &lt;- job:
+
+        // job accepted
+
+    default:
+
+        log.Println("jobs: queue is full, dropping job", job.Type)
+
+    }
+
+}
+
+
+
+func process(job Job) {
+
+    switch job.Type {
+
+    case "send_email":
+
+        log.Println("sending email to", job.Data["email"])
+
+        time.Sleep(500 * time.Millisecond)
+
+    default:
+
+        log.Println("unknown job type:", job.Type)
+
+    }
+
+}</code></pre>
+
+                        </div>
+
+
+
+                        <p>Wire this into your server start function:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">import (
+
+    "context"
+
+    "time"
+
+
+
+    "goBastion/internal/framework/jobs"
+
+)
+
+
+
+func startServer(cfg *config.Config) error {
+
+    ctx, cancel := context.WithCancel(context.Background())
+
+    defer cancel()
+
+
+
+    jobQueue := jobs.NewQueue(100)
+
+    jobQueue.Start(ctx)
+
+
+
+    r := frameworkrouter.New()
+
+    // ... middlewares, routes ...
+
+
+
+    // Example route that enqueues a job instead of doing heavy work synchronously:
+
+    r.Handle("POST", "/api/v1/notify", func(w http.ResponseWriter, r *http.Request, params map[string]string) {
+
+        _ = r.ParseForm()
+
+        email := r.FormValue("email")
+
+
+
+        jobQueue.Enqueue(jobs.Job{
+
+            Type: "send_email",
+
+            Data: map[string]any{
+
+                "email": email,
+
+            },
+
+        })
+
+
+
+        w.WriteHeader(http.StatusAccepted)
+
+        w.Write([]byte("Email job queued"))
+
+    })
+
+
+
+    srv := &http.Server{
+
+        Addr:         cfg.Server.Port,
+
+        Handler:      r,
+
+        ReadTimeout:  10 * time.Second,
+
+        WriteTimeout: 10 * time.Second,
+
+    }
+
+
+
+    return srv.ListenAndServe()
+
+}</code></pre>
+
+                        </div>
+
+
+
+                        <div class="callout tip">
+
+                            <p>This pattern gives you a very simple in-memory job system. In a “huge” production system you would replace the in-memory queue with something like Redis or a message broker, but the logic in your handlers can remain almost identical.</p>
+
+                        </div>
+
+
+
+                        <h3>Example 3: Mutex + Goroutines + Context in a Service</h3>
+
+                        <p>A more advanced pattern is using <code>context.Context</code> everywhere so you can cancel long-running operations when the HTTP request is cancelled or when the server is shutting down.</p>
+
+
+
+                        <p>Create <code>internal/app/reports/service.go</code>:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">package reports
+
+
+
+import (
+
+    "context"
+
+    "sync"
+
+    "time"
+
+)
+
+
+
+type Service struct {
+
+    mu      sync.Mutex
+
+    running bool
+
+}
+
+
+
+func NewService() *Service {
+
+    return &Service{}
+
+}
+
+
+
+// GenerateHeavyReport simulates a heavy report generation that can be cancelled.
+
+func (s *Service) GenerateHeavyReport(ctx context.Context) error {
+
+    s.mu.Lock()
+
+    if s.running {
+
+        s.mu.Unlock()
+
+        return nil // or error: already running
+
+    }
+
+    s.running = true
+
+    s.mu.Unlock()
+
+
+
+    defer func() {
+
+        s.mu.Lock()
+
+        s.running = false
+
+        s.mu.Unlock()
+
+    }()
+
+
+
+    // Simulate chunked work that checks for cancellation.
+
+    for i := 0; i &lt; 10; i++ {
+
+        select {
+
+        case &lt;-ctx.Done():
+
+            return ctx.Err()
+
+        default:
+
+            time.Sleep(300 * time.Millisecond)
+
+        }
+
+    }
+
+    return nil
+
+}</code></pre>
+
+                        </div>
+
+
+
+                        <p>Handler using that service:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">package router
+
+
+
+import (
+
+    "net/http"
+
+
+
+    "goBastion/internal/app/reports"
+
+    frameworkrouter "goBastion/internal/framework/router"
+
+)
+
+
+
+func RegisterReportRoutes(r *frameworkrouter.Router, service *reports.Service) {
+
+    r.Handle("POST", "/api/v1/reports/heavy", func(w http.ResponseWriter, r *http.Request, params map[string]string) {
+
+        ctx := r.Context()
+
+
+
+        if err := service.GenerateHeavyReport(ctx); err != nil {
+
+            http.Error(w, "report cancelled: "+err.Error(), http.StatusRequestTimeout)
+
+            return
+
+        }
+
+
+
+        w.Write([]byte("report generated successfully"))
+
+    })
+
+}</code></pre>
+
+                        </div>
+
+
+
+                        <p>With this pattern you are:</p>
+
+                        <ul>
+
+                            <li>Using a <code>sync.Mutex</code> to protect internal state (<code>running</code> flag).</li>
+
+                            <li>Using goroutines (inside the service) that can be cancelled via <code>context.Context</code>.</li>
+
+                            <li>Integrating all that cleanly into the goBastion routing/handler system.</li>
+
+                        </ul>
+
+                    </section>
+
+
+
+                    <section id="routing">
+
+                        <h2>Routing</h2>
+
+                        <p>The router is a core component of goBastion. It's a simple yet effective HTTP router that supports path parameters and middleware chaining. It's intentionally not a high-performance radix tree router, prioritizing clarity and simplicity.</p>
+
+                        <h3>Defining a Route</h3>
+
+                        <p>Routes are defined by associating an HTTP method and a path pattern with a handler function. The handler function has a specific signature:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">type HandlerFunc func(w http.ResponseWriter, r *http.Request, params map[string]string)</code></pre>
+
+                        </div>
+
+                        
+
+                        <div class="tabs-container my-6">
+
+                            <div class="tab-buttons flex border-b border-gray-800">
+
+                                <button class="tab-btn active" data-tab="simple">Simple</button>
+
+                                <button class="tab-btn" data-tab="with-param">With Parameter</button>
+
+                                <button class="tab-btn" data-tab="with-middleware">With Middleware</button>
+
+                            </div>
+
+                            <div class="tab-contents mt-4">
+
+                                <div class="tab-content active" data-tab-content="simple">
+
+                                    <div class="code-block">
+
+                                        <div class="code-header">
+
+                                            <span class="code-lang">go</span>
+
+                                            <button class="copy-btn">Copy</button>
+
+                                        </div>
+
+                                        <pre><code class="language-go">// GET /api/v1/ping
+
+r.Handle("GET", "/api/v1/ping", handlePing)</code></pre>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="tab-content" data-tab-content="with-param">
+
+                                    <div class="code-block">
+
+                                        <div class="code-header">
+
+                                            <span class="code-lang">go</span>
+
+                                            <button class="copy-btn">Copy</button>
+
+                                        </div>
+
+                                        <pre><code class="language-go">// GET /api/v1/users/{id}
+
+r.Handle("GET", "/api/v1/users/{id}", handleGetUser)</code></pre>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="tab-content" data-tab-content="with-middleware">
+
+                                    <div class="code-block">
+
+                                        <div class="code-header">
+
+                                            <span class="code-lang">go</span>
+
+                                            <button class="copy-btn">Copy</button>
+
+                                        </div>
+
+                                        <pre><code class="language-go">// GET /api/v1/auth/me (Protected)
+
+jwt := middleware.JWTMiddleware(secret)
+
+r.Handle("GET", "/api/v1/auth/me", jwt(handleMe))</code></pre>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <h3>Path Parameters</h3>
+
+                        <p>Path parameters are defined using the <code>{paramName}</code> syntax. They are extracted from the URL and passed to your handler in the <code>params</code> map.</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">// Route registration
+
+r.Handle("GET", "/api/v1/users/{id}", handleGetUserByID)
+
+
+
+// Handler implementation
+
+func handleGetUserByID(w http.ResponseWriter, r *http.Request, params map[string]string) {
+
+    userID := params["id"] // Get the 'id' parameter from the map
+
+    
+
+    // ... logic to fetch user by ID ...
+
+
+
+    fmt.Fprintf(w, "Fetching user with ID: %s", userID)
+
+}
+
+</code></pre>
+
+                        </div>
+
+                        <h3>Grouping and Modularization</h3>
+
+                        <p>The recommended pattern is to group related routes into their own files and create a registration function for each group. This keeps your routing logic organized.</p>
+
+                        <p>For example, all user-related routes are in <code>internal/app/router/users.go</code> and registered via <code>RegisterUserRoutes</code>.</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">// internal/app/router/users.go
+
+package router
+
+
+
+import frameworkrouter "goBastion/internal/framework/router"
+
+
+
+func RegisterUserRoutes(r *frameworkrouter.Router) {
+
+    r.Handle("GET", "/api/v1/users", handleListUsers)
+
+    r.Handle("GET", "/api/v1/users/{id}", handleGetUser)
+
+    // ... other user routes
+
+}
+
+
+
+// cmd/server/main.go
+
+func startServer(cfg *config.Config) {
+
+    // ...
+
+    r := frameworkrouter.New()
+
+    router.RegisterUserRoutes(r) // Call the registration function
+
+    // ...
+
+}
+
+</code></pre>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <section id="configuration">
+
+                        <h2>Configuration &amp; Environments</h2>
+
+                        <p>goBastion uses a hierarchical configuration system that makes it easy to manage settings for different environments.</p>
+
+                        <h3>Configuration Hierarchy</h3>
+
+                        <p>The configuration is loaded in the following order, with later sources overriding earlier ones:</p>
+
+                        <ol>
+
+                            <li><strong>Hardcoded Defaults:</strong> Sensible defaults are defined directly in the configuration structs in the code.</li>
+
+                            <li><strong>JSON File:</strong> The <code>config/config.json</code> file is loaded next. This is the primary place to store your project's base configuration.</li>
+
+                            <li><strong>Environment Variables:</strong> Finally, the application checks for environment variables. This is the recommended way to set sensitive information (like secrets) and environment-specific settings in production.</li>
+
+                        </ol>
+
+                        <h3>The <code>config.json</code> File</h3>
+
+                        <p>The main configuration file is <code>config/config.json</code>. It's structured into logical sections:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">json</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-json">{
+
+  "server": {
+
+    "port": ":8080",
+
+    "read_timeout_seconds": 10,
+
+    "write_timeout_seconds": 10,
+
+    "allowed_origins": "http://localhost:3000"
+
+  },
+
+  "database": {
+
+    "driver": "sqlite3",
+
+    "dsn": "file:api.db?_foreign_keys=on"
+
+  },
+
+  "security": {
+
+    "enable_csrf": false,
+
+    "enable_jwt": true,
+
+    "jwt_secret": "your-default-secret-key",
+
+    "access_token_minutes": 15,
+
+    "refresh_token_minutes": 1440
+
+  },
+
+  "rate_limit": {
+
+    "enabled": true,
+
+    "requests_per_minute": 100
+
+  }
+
+}
+
+</code></pre>
+
+                        </div>
+
+                        <h3>Environment Variables</h3>
+
+                        <p>To override a JSON value, use an environment variable with a specific format: <code>APP_SECTION_KEY</code>. For example, to override the server port and JWT secret in production:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">bash</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-bash">export APP_SERVER_PORT=":80"
+
+export APP_SECURITY_JWT_SECRET="a-very-strong-and-long-production-secret"
+
+./server serve</code></pre>
+
+                        </div>
+
+                        <div class="callout tip">
+
+                            <p><strong>Best Practice:</strong> Never commit secrets like <code>jwt_secret</code> to version control. Use a default, non-production value in <code>config.json</code> and override it with environment variables in your staging and production environments.</p>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <section id="database">
+
+                        <h2>Database &amp; Models</h2>
+
+                        <p>goBastion includes a lightweight but powerful database layer designed to work with standard SQL drivers, with first-class support for SQLite.</p>
+
+                        <h3>Database Connection</h3>
+
+                        <p>The database connection is initialized at startup using the settings from your configuration. It uses the standard <code>database/sql</code> package, including connection pooling for performance.</p>
+
+                        <h3>Migrations</h3>
+
+                        <p>The framework includes a simple, automatic migration system. The necessary tables (like the <code>users</code> table) are created automatically when the database is initialized if they don't already exist. You can run this process manually using the CLI:</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">bash</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-bash">go run ./cmd/server/ migrate</code></pre>
+
+                        </div>
+
+                        <h3>Defining Models</h3>
+
+                        <p>Models are simple Go structs defined in the <code>internal/app/models/</code> directory. They represent your application's data structures.</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">// internal/app/models/user.go
+
+package models
+
+
+
+import "time"
+
+
+
+type User struct {
+
+    ID           int       `json:"id"`
+
+    Name         string    `json:"name"`
+
+    Email        string    `json:"email"`
+
+    Role         string    `json:"role"`
+
+    PasswordHash string    `json:"-"` // Exclude from JSON responses
+
+    CreatedAt    time.Time `json:"created_at"`
+
+}
+
+
+
+// RegisterInput is used for decoding the registration request body
+
+type RegisterInput struct {
+
+    Name     string `json:"name"`
+
+    Email    string `json:"email"`
+
+    Password string `json:"password"`
+
+    Role     string `json:"role"`
+
+}
+
+</code></pre>
+
+                        </div>
+
+                        <h3>Querying the Database</h3>
+
+                        <p>goBastion provides two ways to interact with the database:</p>
+
+                        <h4>1. Helper Functions</h4>
+
+                        <p>The <code>internal/framework/db</code> package provides high-level helper functions for common CRUD operations on the <code>users</code> table, such as <code>db.CreateUser()</code> and <code>db.GetUserByEmail()</code>. These are the preferred way to perform simple queries as they abstract away the SQL.</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">input := models.RegisterInput{...}
+
+hashedPassword, _ := bcrypt.GenerateFromPassword(...)
+
+
+
+user, err := db.CreateUser(r.Context(), input, string(hashedPassword))
+
+if err != nil {
+
+    // Handle error
+
+}
+
+</code></pre>
+
+                        </div>
+
+                        <h4>2. Query Builder (QB)</h4>
+
+                        <p>For more complex queries, a simple, chainable query builder is provided in <code>internal/framework/db/qb.go</code>. It helps construct SQL queries programmatically, preventing SQL injection by using parameterized queries.</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">import "goBastion/internal/framework/db/qb"
+
+
+
+// ... in a handler ...
+
+query, args := qb.New("users").
+
+    Select("id", "name", "email").
+
+    Where("is_active = ? AND role = ?").
+
+    OrderBy("created_at DESC").
+
+    Limit(10).
+
+    Build()
+
+
+
+// query -> "SELECT id, name, email FROM users WHERE is_active = ? AND role = ? ORDER BY created_at DESC LIMIT 10"
+
+// args -> []interface{}{1, "user"}
+
+
+
+rows, err := db.GetDB().QueryContext(r.Context(), query, args...)
+
+// ... process rows ...</code></pre>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <section id="authentication">
+
+                        <h2>Authentication &amp; Security</h2>
+
+                        <p>Security is a first-class citizen in goBastion. The framework comes with a complete, built-in authentication system and multiple layers of security.</p>
+
+                        <h3>JWT Authentication</h3>
+
+                        <p>The core authentication mechanism is based on JSON Web Tokens (JWT). The framework implements the access token/refresh token pattern.</p>
+
+                        <ul>
+
+                            <li><strong>Access Token:</strong> A short-lived token (default 15 mins) sent with each authenticated API request in the <code>Authorization: Bearer &lt;token&gt;</code> header.</li>
+
+                            <li><strong>Refresh Token:</strong> A long-lived token (default 24 hours) used to obtain a new access token without requiring the user to log in again.</li>
+
+                        </ul>
+
+                        <p>The entire JWT implementation is done using the standard library, with no external dependencies.</p>
+
+                        <h4>Authentication Flow:</h4>
+
+                        <ol>
+
+                            <li>User registers or logs in via <code>/api/v1/auth/register</code> or <code>/api/v1/auth/login</code>.</li>
+
+                            <li>The server validates credentials, generates an access and refresh token, and returns them to the client.</li>
+
+                            <li>The client stores these tokens securely. For API requests, it sends the access token in the Authorization header.</li>
+
+                            <li>The <code>JWTMiddleware</code> on the server intercepts the request, validates the token's signature and expiration, and injects user claims into the request context.</li>
+
+                            <li>If the access token expires, the client uses the refresh token to call <code>/api/v1/auth/refresh</code> to get a new pair of tokens.</li>
+
+                        </ol>
+
+                        <h3>Protecting Routes</h3>
+
+                        <p>Protecting a route is as simple as wrapping its handler with the JWT middleware. The framework provides a convenient way to do this during route registration.</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">// Get the middleware from the framework
+
+jwtMiddleware := middleware.JWTMiddleware(cfg.Security.JWTSecret)
+
+
+
+// Apply it to a handler
+
+r.Handle("GET", "/api/v1/auth/me", jwtMiddleware(handleGetCurrentUser))
+
+</code></pre>
+
+                        </div>
+
+                        <h3>Role-Based Access Control (RBAC)</h3>
+
+                        <p>goBastion includes middleware to restrict access to routes based on user roles. The <code>User</code> model has a <code>Role</code> field (e.g., "user", "admin").</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">// Get the middleware
+
+requireAdmin := middleware.RequireRole("admin")
+
+jwtMiddleware := middleware.JWTMiddleware(cfg.Security.JWTSecret)
+
+
+
+// Chain middlewares: JWT validation runs first, then role check
+
+r.Handle("GET", "/admin/dashboard", jwtMiddleware(requireAdmin(handleAdminDashboard)))
+
+</code></pre>
+
+                        </div>
+
+                        <h3>CSRF Protection</h3>
+
+                        <p>For web-based (non-API) routes that handle state-changing requests (POST, PUT, DELETE), the framework provides CSRF protection using the Double-Submit Cookie pattern. When enabled via <code>config.json</code>, the <code>CSRFMiddleware</code> will:</p>
+
+                        <ol>
+
+                            <li>On GET requests, provide a <code>csrf_token</code> cookie to the client.</li>
+
+                            <li>On POST/PUT/DELETE requests, require the client to send the same token value in both the cookie and an <code>X-CSRF-Token</code> header.</li>
+
+                        </ol>
+
+                        <p>This protection is crucial for the HTML-based login, registration, and admin panel pages.</p>
+
+                    </section>
+
+
+
+                    <section id="templating">
+
+                        <h2>Templating &amp; Views</h2>
+
+                        <p>While goBastion is excellent for building headless APIs, it also includes a simple and powerful server-side HTML template engine for building traditional web UIs or an admin panel.</p>
+
+                        <h3>Template Engine</h3>
+
+                        <p>The template engine is a custom implementation that uses a familiar, PHP-like syntax. It's designed for simplicity and security.</p>
+
+                        <ul>
+
+                            <li><strong>Syntax:</strong> Use <code>@variable</code> for escaped output. Control structures like <code>go:: if condition ... ::end</code> and <code>go:: range $items ... ::end</code> are also supported.</li>
+
+                            <li><strong>Security:</strong> All output using <code>@expr</code> is automatically HTML-escaped to prevent XSS attacks.</li>
+
+                            <li><strong>Layouts and Partials:</strong> You can include partial templates within layouts using <code>@include "path/to/partial.html" .Data</code>, allowing for reusable components and layouts.</li>
+
+                        </ul>
+
                         <h3>Modern goBastion Template Syntax ✨</h3>
                         <div class="callout tip">
                             <p><strong>🎉 New:</strong> The template engine now uses a clean, Go-like syntax with only two constructs: <code>go:: ... ::end</code> for logic blocks and <code>@expr</code> for output!</p>
                         </div>
                         <p>For complete documentation on the new syntax, see <a href="TEMPLATE_SYNTAX.md" target="_blank">TEMPLATE_SYNTAX.md</a>.</p>
-                        <h3>Rendering a Template</h3>
-                        <p>In your handler, you use the <code>view.Render</code> function to render a template and pass data to it.</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">go</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-go">// In a handler for an HTML page
-func handleAdminDashboard(w http.ResponseWriter, r *http.Request, params map[string]string) {
-    // tmplEngine is the view.Engine instance initialized at startup
-    
-    data := map[string]interface{}{
-        "PageTitle": "Admin Dashboard",
-        "UserCount": 123, // Fetched from DB
-    }
-
-    err := tmplEngine.Render(w, "admin/dashboard", data)
-    if err != nil {
-        http.Error(w, "Could not render template", http.StatusInternalServerError)
-    }
-}
-</code></pre>
-                        </div>
-                        <p>This will render the <code>templates/admin/dashboard.html</code> file.</p>
-                        <h3>Example Template</h3>
-                        <p>Here's what a simple template might look like (<code>templates/admin/dashboard.html</code>):</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">html</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-html">&lt;? include "admin/layout/header.html" . ?&gt;
-
-&lt;h1&gt;&lt;?= .PageTitle ?&gt;&lt;/h1&gt;
-
-&lt;div class="card"&gt;
-    &lt;h2&gt;Total Users&lt;/h2&gt;
-    &lt;p class="stat"&gt;&lt;?= .UserCount ?&gt;&lt;/p&gt;
-&lt;/div&gt;
-
-&lt;? if .UserCount > 100 ?&gt;
-    &lt;p&gt;You have a lot of users!&lt;/p&gt;
-&lt;? end ?&gt;
-
-&lt;? include "admin/layout/footer.html" . ?&gt;
-</code></pre>
-                        </div>
-                    </section>
+                        <h3>Rendering a Template</h3>
+
+                        <p>In your handler, you use the <code>view.Render</code> function to render a template and pass data to it.</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">go</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-go">// In a handler for an HTML page
+
+func handleAdminDashboard(w http.ResponseWriter, r *http.Request, params map[string]string) {
+
+    // tmplEngine is the view.Engine instance initialized at startup
+
+    
+
+    data := map[string]interface{}{
+
+        "PageTitle": "Admin Dashboard",
+
+        "UserCount": 123, // Fetched from DB
+
+    }
+
+
+
+    err := tmplEngine.Render(w, "admin/dashboard", data)
+
+    if err != nil {
+
+        http.Error(w, "Could not render template", http.StatusInternalServerError)
+
+    }
+
+}
+
+</code></pre>
+
+                        </div>
+
+                        <p>This will render the <code>templates/admin/dashboard.html</code> file.</p>
+
+                        <h3>Example Template</h3>
+
+                        <p>Here's what a simple template might look like (<code>templates/admin/dashboard.html</code>):</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">html</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-html">@include "admin/layout/header.html" .
+
+&lt;h1&gt;@.PageTitle&lt;/h1&gt;
+
+&lt;div class="card"&gt;
+    &lt;h2&gt;Total Users&lt;/h2&gt;
+    &lt;p class="stat"&gt;@.UserCount&lt;/p&gt;
+&lt;/div&gt;
+
+go:: if .UserCount &gt; 100
+    &lt;p&gt;You have a lot of users!&lt;/p&gt;
+::end
+
+@include "admin/layout/footer.html" .
+</code></pre>
+
+                        </div>
+
+                    </section>
+
 
                     <section id="editor-support">
                         <h2>🎨 Editor Support</h2>
@@ -1817,7 +3484,8 @@ code --install-extension gobastion-templates-0.1.0.vsix</code></pre>
                             <p><strong>🎉 Ready to Go!</strong> After installing editor support, restart your editor and open any <code>.gb.html</code> file to enjoy full syntax highlighting!</p>
                         </div>
                     </section>
-
+
+
 
                     <section id="advanced-examples">
                         <h2>🚀 Advanced Examples</h2>
@@ -2099,114 +3767,225 @@ func (rl *RateLimiter) Wait(ctx context.Context) error {
                             <p><strong>📚 Learn More:</strong> See the complete implementation in <code>internal/app/chat/</code> and <code>internal/app/router/chat.go</code>.</p>
                         </div>
                     </section>
-                    <section id="cli-reference">
-                        <h2>CLI Reference</h2>
-                        <p>The generated application comes with a powerful command-line interface, dispatched from <code>go run ./cmd/server/main.go</code>. It's used for development, database management, and other utilities.</p>
-                        
-                        <h3>Usage</h3>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">bash</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-bash">go run ./cmd/server/ &lt;command&gt; [arguments]</code></pre>
-                        </div>
-
-                        <h3>Commands</h3>
-                        <div class="overflow-x-auto">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Command</th>
-                                        <th>Description</th>
-                                        <th>Example</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><code>serve</code></td>
-                                        <td>Starts the web server for development. Uses live-reloading if <code>.air.toml</code> is present.</td>
-                                        <td><code>go run ./cmd/server/ serve</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>migrate</code></td>
-                                        <td>Runs the database migrations. Creates tables and indexes if they don't exist.</td>
-                                        <td><code>go run ./cmd/server/ migrate</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>seed</code></td>
-                                        <td>Seeds the database with initial data, such as a default admin user.</td>
-                                        <td><code>go run ./cmd/server/ seed</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>create-admin</code></td>
-                                        <td>Creates a new admin user interactively.</td>
-                                        <td><code>go run ./cmd/server/ create-admin --email=a@b.com --password=... --name=...</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>doctor</code></td>
-                                        <td>Runs a system health check to verify configuration, database connectivity, and more.</td>
-                                        <td><code>go run ./cmd/server/ doctor</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>new-module</code></td>
-                                        <td>Scaffolds a new CRUD module, creating model and router files with boilerplate code.</td>
-                                        <td><code>go run ./cmd/server/ new-module products</code></td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>test</code></td>
-                                        <td>Runs the project's Go tests (e.g., files ending in <code>_test.go</code>).</td>
-                                        <td><code>go run ./cmd/server/ test -v</code></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </section>
-
-                    <section id="deployment">
-                        <h2>Deployment &amp; Production</h2>
-                        <p>goBastion is designed for production. Here’s how to deploy your application.</p>
-                        <h3>1. Build a Production Binary</h3>
-                        <p>Compile your application into a single, statically-linked binary. This binary contains the server, your handlers, and all framework code.</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">bash</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-bash"># The -ldflags="-w -s" part strips debug information, making the binary smaller.
-GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o myapp ./cmd/server/</code></pre>
-                        </div>
-                        <h3>2. Use Docker</h3>
-                        <p>The recommended way to deploy is using Docker. The generated project includes a multi-stage <code>Dockerfile</code> that creates a small, optimized production image.</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span class="code-lang">bash</span>
-                                <button class="copy-btn">Copy</button>
-                            </div>
-                            <pre><code class="language-bash"># Build the Docker image
-docker build -t myapp:latest .
-
-# Run the container
-docker run -p 8080:8080 \
-  -e APP_SECURITY_JWT_SECRET="your-production-secret" \
-  -e APP_DB_DSN="your-production-db-connection-string" \
-  myapp:latest</code></pre>
-                        </div>
-                        <p>The included <code>docker-compose.yml</code> is useful for multi-container setups, for example, running your app alongside a Postgres or Redis container.</p>
-                        <h3>Production Checklist</h3>
-                        <ul>
-                            <li><strong>Configuration:</strong> Use environment variables for all sensitive data (DB connection strings, JWT secrets). Do not use the <code>config.json</code> for production secrets.</li>
-                            <li><strong>Database:</strong> Switch from SQLite to a production-grade database like PostgreSQL or MySQL. Update the <code>APP_DB_DRIVER</code> and <code>APP_DB_DSN</code> environment variables.</li>
-                            <li><strong>HTTPS:</strong> Do not run a Go server directly exposed to the internet on port 80/443. Place it behind a reverse proxy like Nginx or Caddy that can handle TLS termination (HTTPS), caching, and request logging more efficiently.</li>
-                            <li><strong>Logging:</strong> Configure your reverse proxy and application to output structured logs (e.g., JSON) and forward them to a log aggregation service (like ELK, Splunk, or CloudWatch).</li>
-                            <li><strong>Monitoring:</strong> Add a health check endpoint (e.g., <code>/healthz</code>) that your infrastructure can ping to ensure the service is alive.</li>
-                        </ul>
-                    </section>
-                </article>
-            </div>
-        </main>
-    </div>
-
-    <script src="main.js"></script>
-</body>
-</html>
+                    <section id="cli-reference">
+
+                        <h2>CLI Reference</h2>
+
+                        <p>The generated application comes with a powerful command-line interface, dispatched from <code>go run ./cmd/server/main.go</code>. It's used for development, database management, and other utilities.</p>
+
+                        
+
+                        <h3>Usage</h3>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">bash</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-bash">go run ./cmd/server/ &lt;command&gt; [arguments]</code></pre>
+
+                        </div>
+
+
+
+                        <h3>Commands</h3>
+
+                        <div class="overflow-x-auto">
+
+                            <table>
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>Command</th>
+
+                                        <th>Description</th>
+
+                                        <th>Example</th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    <tr>
+
+                                        <td><code>serve</code></td>
+
+                                        <td>Starts the web server for development. Uses live-reloading if <code>.air.toml</code> is present.</td>
+
+                                        <td><code>go run ./cmd/server/ serve</code></td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td><code>migrate</code></td>
+
+                                        <td>Runs the database migrations. Creates tables and indexes if they don't exist.</td>
+
+                                        <td><code>go run ./cmd/server/ migrate</code></td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td><code>seed</code></td>
+
+                                        <td>Seeds the database with initial data, such as a default admin user.</td>
+
+                                        <td><code>go run ./cmd/server/ seed</code></td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td><code>create-admin</code></td>
+
+                                        <td>Creates a new admin user interactively.</td>
+
+                                        <td><code>go run ./cmd/server/ create-admin --email=a@b.com --password=... --name=...</code></td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td><code>doctor</code></td>
+
+                                        <td>Runs a system health check to verify configuration, database connectivity, and more.</td>
+
+                                        <td><code>go run ./cmd/server/ doctor</code></td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td><code>new-module</code></td>
+
+                                        <td>Scaffolds a new CRUD module, creating model and router files with boilerplate code.</td>
+
+                                        <td><code>go run ./cmd/server/ new-module products</code></td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td><code>test</code></td>
+
+                                        <td>Runs the project's Go tests (e.g., files ending in <code>_test.go</code>).</td>
+
+                                        <td><code>go run ./cmd/server/ test -v</code></td>
+
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <section id="deployment">
+
+                        <h2>Deployment &amp; Production</h2>
+
+                        <p>goBastion is designed for production. Here’s how to deploy your application.</p>
+
+                        <h3>1. Build a Production Binary</h3>
+
+                        <p>Compile your application into a single, statically-linked binary. This binary contains the server, your handlers, and all framework code.</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">bash</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-bash"># The -ldflags="-w -s" part strips debug information, making the binary smaller.
+
+GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o myapp ./cmd/server/</code></pre>
+
+                        </div>
+
+                        <h3>2. Use Docker</h3>
+
+                        <p>The recommended way to deploy is using Docker. The generated project includes a multi-stage <code>Dockerfile</code> that creates a small, optimized production image.</p>
+
+                        <div class="code-block">
+
+                            <div class="code-header">
+
+                                <span class="code-lang">bash</span>
+
+                                <button class="copy-btn">Copy</button>
+
+                            </div>
+
+                            <pre><code class="language-bash"># Build the Docker image
+
+docker build -t myapp:latest .
+
+
+
+# Run the container
+
+docker run -p 8080:8080 \
+
+  -e APP_SECURITY_JWT_SECRET="your-production-secret" \
+
+  -e APP_DB_DSN="your-production-db-connection-string" \
+
+  myapp:latest</code></pre>
+
+                        </div>
+
+                        <p>The included <code>docker-compose.yml</code> is useful for multi-container setups, for example, running your app alongside a Postgres or Redis container.</p>
+
+                        <h3>Production Checklist</h3>
+
+                        <ul>
+
+                            <li><strong>Configuration:</strong> Use environment variables for all sensitive data (DB connection strings, JWT secrets). Do not use the <code>config.json</code> for production secrets.</li>
+
+                            <li><strong>Database:</strong> Switch from SQLite to a production-grade database like PostgreSQL or MySQL. Update the <code>APP_DB_DRIVER</code> and <code>APP_DB_DSN</code> environment variables.</li>
+
+                            <li><strong>HTTPS:</strong> Do not run a Go server directly exposed to the internet on port 80/443. Place it behind a reverse proxy like Nginx or Caddy that can handle TLS termination (HTTPS), caching, and request logging more efficiently.</li>
+
+                            <li><strong>Logging:</strong> Configure your reverse proxy and application to output structured logs (e.g., JSON) and forward them to a log aggregation service (like ELK, Splunk, or CloudWatch).</li>
+
+                            <li><strong>Monitoring:</strong> Add a health check endpoint (e.g., <code>/healthz</code>) that your infrastructure can ping to ensure the service is alive.</li>
+
+                        </ul>
+
+                    </section>
+
+                </article>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+
+    <script src="main.js"></script>
+
+</body>
+
+</html>
+
