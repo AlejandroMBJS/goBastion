@@ -3543,12 +3543,13 @@ go:: range .Items
   &lt;li&gt;@.Name - $@.Price&lt;/li&gt;
 ::end
 &lt;/ul&gt;</code></pre>
-<p><strong>Range with index and value:</strong></p>
-<pre><code class="language-html">&lt;ol&gt;
-go:: range $index, $item := .Items
-  &lt;li&gt;Item #@$index: @$item.Name&lt;/li&gt;
+<p><strong>Range with current item:</strong></p>
+<pre><code class="language-html">&lt;ul&gt;
+go:: range .Items
+  &lt;li&gt;@.Name - @.Price&lt;/li&gt;
 ::end
-&lt;/ol&gt;</code></pre>
+&lt;/ul&gt;</code></pre>
+<p><em>Note: Inside the range loop, <code>.</code> refers to the current item. The template engine does not support Go template variable assignment (<code>$var</code>) with the <code>@</code> syntax.</em></p>
 <p><strong>Empty list handling:</strong></p>
 <pre><code class="language-html">go:: if .Users
 &lt;table&gt;
@@ -3730,10 +3731,11 @@ go:: else
 <pre><code class="language-html">go:: if .CanAccess
   &lt;button&gt;Access Content&lt;/button&gt;
 ::end</code></pre>
-<h4>2. <strong>Use meaningful variable names</strong></h4>
-<pre><code class="language-html">go:: range $user := .Users
-  &lt;li&gt;@$user.Name&lt;/li&gt;
+<h4>2. <strong>Access properties directly</strong></h4>
+<pre><code class="language-html">go:: range .Users
+  &lt;li&gt;@.Name (@.Email)&lt;/li&gt;
 ::end</code></pre>
+<p><em>Inside the loop, <code>.</code> refers to each user object.</em></p>
 <h4>3. <strong>Check for empty collections</strong></h4>
 <pre><code class="language-html">go:: if .Items
   &lt;!-- show items --&gt;

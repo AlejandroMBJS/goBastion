@@ -27,6 +27,9 @@ func RegisterAuthViewsRoutes(r *frameworkrouter.Router, cfg config.SecurityConfi
 
 	// POST /register - process register form
 	r.Handle("POST", "/register", handleRegisterForm(cfg, views))
+
+	// GET /logout - logout user
+	r.Handle("GET", "/logout", handleLogout())
 }
 
 // handleLoginPage shows the login page
@@ -338,5 +341,24 @@ func renderRegisterError(w http.ResponseWriter, views *view.Engine, cfg config.S
 	w.WriteHeader(http.StatusBadRequest)
 	if err := views.Render(w, "auth/register", data); err != nil {
 		http.Error(w, "Failed to render template", http.StatusInternalServerError)
+	}
+}
+
+// handleLogout handles user logout
+func handleLogout() frameworkrouter.Handler {
+	return func(w http.ResponseWriter, r *http.Request, params map[string]string) {
+		// Clear auth cookie
+		http.SetCookie(w, &http.Cookie{
+			Name:     "auth_token",
+			Value:    "",
+			Path:     "/",
+			HttpOnly: true,
+			Secure:   false,
+			SameSite: http.SameSiteLaxMode,
+			MaxAge:   -1, // Delete cookie
+		})
+
+		// Redirect to home
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }

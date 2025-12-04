@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@.Title - goBastion</title>
+    <link rel="stylesheet" href="/static/css/output.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        goBastion Admin
+                    </h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/admin" class="px-4 py-2 text-gray-700 hover:text-indigo-600 font-medium transition-colors">Dashboard</a>
+                    <a href="/admin/users" class="px-4 py-2 text-indigo-600 font-semibold border-b-2 border-indigo-600">Users</a>
+                    <a href="/docs" class="px-4 py-2 text-gray-700 hover:text-indigo-600 font-medium transition-colors">API Docs</a>
+                    <a href="/" class="px-4 py-2 text-gray-700 hover:text-indigo-600 font-medium transition-colors">Home</a>
+                    <a href="/logout" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors">
+                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Back Link -->
+        <a href="/admin/users" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium mb-6">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Back to Users
+        </a>
+
+        <!-- Header -->
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900">@.Title</h2>
+            <p class="mt-2 text-gray-600">Add a new user to the system</p>
+        </div>
+
+        go:: if .Error
+        <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                </svg>
+                <span>@.Error</span>
+            </div>
+        </div>
+        ::end
+
+        <!-- Form -->
+        <div class="bg-white rounded-xl shadow-md p-8 border border-gray-200">
+            <form method="POST" action="/admin/users/new" class="space-y-6">
+                go:: if .CSRFToken
+                <input type="hidden" name="csrf_token" value="@.CSRFToken">
+                ::end
+
+                <div>
+                    <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value="@.Name"
+                        required
+                        autofocus
+                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-200 transition-all">
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="@.Email"
+                        required
+                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-200 transition-all">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        required
+                        placeholder="Enter a strong password"
+                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-200 transition-all">
+                    <p class="text-xs text-gray-500 mt-1.5">Must be at least 8 characters long</p>
+                </div>
+
+                <div>
+                    <label for="role" class="block text-sm font-semibold text-gray-700 mb-2">Role</label>
+                    <select
+                        id="role"
+                        name="role"
+                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-200 transition-all bg-white">
+                        <option value="user" go:: if eq .Role "user" selected ::end>User</option>
+                        <option value="admin" go:: if eq .Role "admin" selected ::end>Admin</option>
+                    </select>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex items-center">
+                        <input
+                            type="checkbox"
+                            id="is_staff"
+                            name="is_staff"
+                            class="w-5 h-5 text-indigo-600 border-2 border-gray-300 rounded focus:ring-2 focus:ring-indigo-200 focus:ring-offset-0 cursor-pointer">
+                        <label for="is_staff" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer">
+                            Staff Member
+                            <span class="block text-xs text-gray-500">Can access the admin panel</span>
+                        </label>
+                    </div>
+
+                    <div class="flex items-center">
+                        <input
+                            type="checkbox"
+                            id="is_superuser"
+                            name="is_superuser"
+                            class="w-5 h-5 text-indigo-600 border-2 border-gray-300 rounded focus:ring-2 focus:ring-indigo-200 focus:ring-offset-0 cursor-pointer">
+                        <label for="is_superuser" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer">
+                            Superuser
+                            <span class="block text-xs text-gray-500">Has all permissions granted</span>
+                        </label>
+                    </div>
+
+                    <div class="flex items-center">
+                        <input
+                            type="checkbox"
+                            id="is_active"
+                            name="is_active"
+                            checked
+                            class="w-5 h-5 text-indigo-600 border-2 border-gray-300 rounded focus:ring-2 focus:ring-indigo-200 focus:ring-offset-0 cursor-pointer">
+                        <label for="is_active" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer">
+                            Active Account
+                            <span class="block text-xs text-gray-500">User can sign in and access the system</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
+                    <a href="/admin/users" class="px-6 py-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium transition-colors">
+                        Cancel
+                    </a>
+                    <button
+                        type="submit"
+                        class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 font-semibold transition-all transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl">
+                        Create User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

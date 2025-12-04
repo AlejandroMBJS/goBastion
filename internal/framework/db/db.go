@@ -70,15 +70,10 @@ func migrate() error {
 	return err
 }
 
-// ListUsers retrieves all users
+// ListUsers retrieves all users using the query builder
 func ListUsers(ctx context.Context) ([]models.User, error) {
-	query := `
-		SELECT id, name, email, role, is_active, is_staff, is_superuser
-		FROM users
-		ORDER BY id DESC
-	`
-
-	rows, err := DB.QueryContext(ctx, query)
+	// Use the framework's FindAll helper
+	rows, err := FindAll(ctx, "users", "id DESC")
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +83,10 @@ func ListUsers(ctx context.Context) ([]models.User, error) {
 	for rows.Next() {
 		var u models.User
 		var isActive, isStaff, isSuperuser int
-		err := rows.Scan(&u.ID, &u.Name, &u.Email, &u.Role, &isActive, &isStaff, &isSuperuser)
+		var passwordHash string
+		var createdAt sql.NullTime
+
+		err := rows.Scan(&u.ID, &u.Name, &u.Email, &u.Role, &isActive, &isStaff, &isSuperuser, &passwordHash, &createdAt)
 		if err != nil {
 			return nil, err
 		}
@@ -105,7 +103,7 @@ func ListUsers(ctx context.Context) ([]models.User, error) {
 	return users, nil
 }
 
-// CreateUser creates a new user with the given password hash
+// CreateUser creates a new user with the given password hash using query builder
 func CreateUser(ctx context.Context, in models.RegisterInput, passwordHash string) (models.User, error) {
 	// Default role to "user" if not specified
 	role := in.Role
@@ -113,17 +111,18 @@ func CreateUser(ctx context.Context, in models.RegisterInput, passwordHash strin
 		role = "user"
 	}
 
-	query := `
-		INSERT INTO users (name, email, role, password_hash, is_active, is_staff, is_superuser)
-		VALUES (?, ?, ?, ?, 1, 0, 0)
-	`
-
-	result, err := DB.ExecContext(ctx, query, in.Name, in.Email, role, passwordHash)
-	if err != nil {
-		return models.User{}, err
+	// Use the framework's Insert helper
+	data := map[string]any{
+		"name":          in.Name,
+		"email":         in.Email,
+		"role":          role,
+		"password_hash": passwordHash,
+		"is_active":     1,
+		"is_staff":      0,
+		"is_superuser":  0,
 	}
 
-	id, err := result.LastInsertId()
+	id, err := Insert(ctx, "users", data)
 	if err != nil {
 		return models.User{}, err
 	}
@@ -131,23 +130,15 @@ func CreateUser(ctx context.Context, in models.RegisterInput, passwordHash strin
 	return GetUser(ctx, int(id))
 }
 
-// GetUser retrieves a user by ID
+// GetUser retrieves a user by ID using query builder
 func GetUser(ctx context.Context, id int) (models.User, error) {
-	query := `
-		SELECT id, name, email, role, is_active, is_staff, is_superuser
-		FROM users
-		WHERE id = ?
-	`
-
 	var u models.User
 	var isActive, isStaff, isSuperuser int
-	err := DB.QueryRowContext(ctx, query, id).Scan(
-		&u.ID, &u.Name, &u.Email, &u.Role, &isActive, &isStaff, &isSuperuser,
-	)
+	var passwordHash string
+	var createdAt sql.NullTime
 
-	if err == sql.ErrNoRows {
-		return models.User{}, ErrNotFound
-	}
+	// Use the framework's FindByID helper
+	err := FindByID(ctx, "users", id, &u.ID, &u.Name, &u.Email, &u.Role, &isActive, &isStaff, &isSuperuser, &passwordHash, &createdAt)
 	if err != nil {
 		return models.User{}, err
 	}
@@ -159,25 +150,16 @@ func GetUser(ctx context.Context, id int) (models.User, error) {
 	return u, nil
 }
 
-// GetUserByEmail retrieves a user by email and returns the password hash
+// GetUserByEmail retrieves a user by email and returns the password hash using query builder
 func GetUserByEmail(ctx context.Context, email string) (models.User, string, error) {
-	query := `
-		SELECT id, name, email, role, is_active, is_staff, is_superuser, password_hash
-		FROM users
-		WHERE email = ?
-	`
-
 	var u models.User
 	var isActive, isStaff, isSuperuser int
 	var passwordHash string
+	var createdAt sql.NullTime
 
-	err := DB.QueryRowContext(ctx, query, email).Scan(
-		&u.ID, &u.Name, &u.Email, &u.Role, &isActive, &isStaff, &isSuperuser, &passwordHash,
-	)
-
-	if err == sql.ErrNoRows {
-		return models.User{}, "", ErrNotFound
-	}
+	// Use the framework's FindOneBy helper
+	conditions := map[string]any{"email": email}
+	err := FindOneBy(ctx, "users", conditions, &u.ID, &u.Name, &u.Email, &u.Role, &isActive, &isStaff, &isSuperuser, &passwordHash, &createdAt)
 	if err != nil {
 		return models.User{}, "", err
 	}
@@ -189,39 +171,25 @@ func GetUserByEmail(ctx context.Context, email string) (models.User, string, err
 	return u, passwordHash, nil
 }
 
-// UpdateUser updates an existing user
+// UpdateUser updates an existing user using query builder
 func UpdateUser(ctx context.Context, id int, in models.UserInput) (models.User, error) {
-	query := `
-		UPDATE users
-		SET name = ?, email = ?, role = ?
-		WHERE id = ?
-	`
-
-	result, err := DB.ExecContext(ctx, query, in.Name, in.Email, in.Role, id)
-	if err != nil {
-		return models.User{}, err
+	// Use the framework's UpdateByID helper
+	data := map[string]any{
+		"name":  in.Name,
+		"email": in.Email,
+		"role":  in.Role,
 	}
 
-	rows, err := result.RowsAffected()
+	err := UpdateByID(ctx, "users", id, data)
 	if err != nil {
 		return models.User{}, err
-	}
-
-	if rows == 0 {
-		return models.User{}, ErrNotFound
 	}
 
 	return GetUser(ctx, id)
 }
 
-// UpdateUserAdmin updates user admin fields (is_staff, is_superuser)
+// UpdateUserAdmin updates user admin fields (is_staff, is_superuser) using query builder
 func UpdateUserAdmin(ctx context.Context, id int, isStaff, isSuperuser bool) error {
-	query := `
-		UPDATE users
-		SET is_staff = ?, is_superuser = ?
-		WHERE id = ?
-	`
-
 	isStaffInt := 0
 	if isStaff {
 		isStaffInt = 1
@@ -231,42 +199,34 @@ func UpdateUserAdmin(ctx context.Context, id int, isStaff, isSuperuser bool) err
 		isSuperuserInt = 1
 	}
 
-	result, err := DB.ExecContext(ctx, query, isStaffInt, isSuperuserInt, id)
-	if err != nil {
-		return err
+	// Use the framework's UpdateByID helper
+	data := map[string]any{
+		"is_staff":     isStaffInt,
+		"is_superuser": isSuperuserInt,
 	}
 
-	rows, err := result.RowsAffected()
-	if err != nil {
-		return err
-	}
-
-	if rows == 0 {
-		return ErrNotFound
-	}
-
-	return nil
+	return UpdateByID(ctx, "users", id, data)
 }
 
-// DeleteUser deletes a user by ID
+// UpdateUserActive updates user active status using query builder
+func UpdateUserActive(ctx context.Context, id int, isActive bool) error {
+	isActiveInt := 0
+	if isActive {
+		isActiveInt = 1
+	}
+
+	// Use the framework's UpdateByID helper
+	data := map[string]any{
+		"is_active": isActiveInt,
+	}
+
+	return UpdateByID(ctx, "users", id, data)
+}
+
+// DeleteUser deletes a user by ID using query builder
 func DeleteUser(ctx context.Context, id int) error {
-	query := `DELETE FROM users WHERE id = ?`
-
-	result, err := DB.ExecContext(ctx, query, id)
-	if err != nil {
-		return err
-	}
-
-	rows, err := result.RowsAffected()
-	if err != nil {
-		return err
-	}
-
-	if rows == 0 {
-		return ErrNotFound
-	}
-
-	return nil
+	// Use the framework's DeleteByID helper
+	return DeleteByID(ctx, "users", id)
 }
 
 // Close closes the database connection

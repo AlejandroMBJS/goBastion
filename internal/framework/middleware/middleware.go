@@ -1,3 +1,81 @@
+// Package middleware provides HTTP middleware functions for the goBastion framework.
+//
+// ⚠️ FRAMEWORK CORE - DO NOT MODIFY (unless extending framework)
+//
+// This package implements critical security and observability middleware:
+//   - CSRF protection (prevents cross-site request forgery attacks)
+//   - JWT authentication (validates JWT tokens from cookies)
+//   - Rate limiting (prevents abuse and DoS attacks)
+//   - Request ID generation (for request tracing)
+//   - Logging (HTTP request/response logging)
+//   - Panic recovery (prevents server crashes)
+//
+// SECURITY-CRITICAL: This middleware provides the security foundation for the framework.
+// Bypassing or modifying these middlewares can create serious security vulnerabilities.
+//
+// WHEN TO MODIFY:
+//   - ❌ DO NOT remove or bypass security middleware (CSRF, JWT, rate limiting)
+//   - ❌ DO NOT modify CSRF validation logic (breaks security)
+//   - ❌ DO NOT modify JWT validation logic (breaks authentication)
+//   - ⚠️  MODIFY rate limiting thresholds via config/config.json (preferred)
+//   - ✅ ADD new middleware in your app code (internal/app/middleware/)
+//   - ✅ EXTEND by creating new middleware functions that wrap these
+//
+// MIDDLEWARE EXECUTION ORDER (in main.go):
+//  1. Global middleware (apply to all routes):
+//     - Rate limiting (if enabled)
+//     - Request ID generation
+//     - Logging
+//     - Panic recovery
+//  2. Route-specific middleware (apply to specific routes):
+//     - CSRF protection (forms)
+//     - JWT authentication (protected routes)
+//     - Role-based access control (admin routes)
+//
+// USAGE IN MAIN.GO:
+//
+//	// Global middleware
+//	r := router.NewRouter()
+//	if cfg.RateLimit.Enabled {
+//	    r.Use(middleware.RateLimit(cfg.RateLimit))
+//	}
+//	r.Use(middleware.RequestID())
+//	r.Use(middleware.Logging)
+//	r.Use(middleware.Recover)
+//
+//	// Route-specific middleware
+//	adminAuth := middleware.RequireRole("admin")
+//	r.Handle("GET", "/admin", adminAuth(handleDashboard))
+//
+// ADDING CUSTOM MIDDLEWARE:
+// Create your own middleware in internal/app/middleware/custom.go:
+//
+//	package middleware
+//
+//	import "net/http"
+//	import "github.com/AlejandroMBJS/goBastion/internal/framework/router"
+//
+//	func MyCustomMiddleware() router.Middleware {
+//	    return func(next router.Handler) router.Handler {
+//	        return func(w http.ResponseWriter, r *http.Request, params map[string]string) {
+//	            // Your logic before handler
+//	            next(w, r, params)
+//	            // Your logic after handler
+//	        }
+//	    }
+//	}
+//
+// Then in main.go:
+//	r.Use(myCustomMiddleware.MyCustomMiddleware())
+//
+// SECURITY NOTES:
+//   - CSRF middleware must be used on all form submissions
+//   - JWT middleware must be used on all protected routes
+//   - Rate limiting prevents brute force and DoS attacks
+//   - Always validate configuration via config/config.json, never hard-code security settings
+//
+// For configuration options, see: config/config.json (security, rate_limit sections)
+// For usage examples, see: cmd/server/main.go
 package middleware
 
 import (
@@ -17,7 +95,8 @@ import (
 	"github.com/AlejandroMBJS/goBastion/internal/framework/security"
 )
 
-// Context keys for storing values
+// contextKey is a custom type for context keys to avoid collisions.
+// Using a custom type prevents conflicts with other packages that use string keys.
 type contextKey string
 
 const (

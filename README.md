@@ -8,7 +8,137 @@ goBastion is a modern, production-ready Go framework designed for rapid developm
 - **💅 Tailwind-Styled Templates**: Beautiful, responsive UI out of the box
 - **🏠 Professional Home Page**: Next.js/Django-style boilerplate landing page at `/`
 - **🔒 Security First**: Auto HTML escaping, CSRF protection, JWT auth, rate limiting
+- **👥 Complete Admin CRUD**: Full user management with create, read, update, delete
 - **✅ Comprehensive Tests**: Full test coverage for template engine and routes
+
+## 📖 Philosophy & Architecture
+
+### Design Principles
+
+goBastion is built on these core principles:
+
+1. **Security by Default**: CSRF protection, XSS prevention, rate limiting, and JWT authentication are enabled out of the box
+2. **Convention over Configuration**: Sensible defaults with the ability to customize through a centralized JSON configuration
+3. **Developer Experience First**: Clean, intuitive template syntax that feels natural to Go developers
+4. **Production Ready**: Built with real-world production needs in mind - not just a toy framework
+5. **Minimal Magic**: Explicit over implicit - you should understand what's happening under the hood
+
+### Framework Architecture
+
+goBastion follows a clean separation between **framework core** and **application layer**:
+
+```
+goBastion/
+├── internal/framework/     ← Framework core (stable, rarely modified)
+│   ├── config/             - Configuration management
+│   ├── db/                 - Database abstractions & query builder
+│   ├── middleware/         - HTTP middlewares (CSRF, auth, rate limiting)
+│   ├── router/             - HTTP router
+│   ├── security/           - Security primitives (JWT, CSRF tokens)
+│   └── view/               - Template engine (go:: / @ syntax)
+│
+├── internal/app/           ← Application layer (customize freely)
+│   ├── models/             - Your data models
+│   ├── router/             - Your route handlers
+│   └── chat/               - Example: real-time chat feature
+│
+├── templates/              ← Your HTML templates (go:: / @ syntax)
+│   ├── home.html           - Landing page
+│   ├── auth/               - Login, register
+│   └── admin/              - Admin dashboard & CRUD
+│
+└── config/                 ← Configuration
+    └── config.json         - Centralized JSON configuration
+```
+
+**Key Concept**: The `internal/framework/` directory contains stable, battle-tested code that you should **rarely modify**. The `internal/app/` and `templates/` directories are where you build your application.
+
+### Template Engine Architecture
+
+The custom template engine (`internal/framework/view/view.go`) preprocesses templates:
+
+```
+Your Template (go:: / @)  →  Preprocessor  →  Go html/template  →  Safe HTML Output
+   ↓                             ↓                    ↓
+go:: if .User              {{ if .User          <p>Hello John</p>
+  <p>Hello @.User.Name</p>   <p>Hello {{.User.Name}}</p>
+::end                        {{ end }}
+```
+
+This gives you a clean syntax while maintaining Go's template security (auto HTML escaping, type safety).
+
+## 🚀 Quickstart
+
+Get the demo running in 3 steps:
+
+### 1. Build and Run
+
+```bash
+# Build the server
+go build -o gobastion-server ./cmd/server
+
+# Run it
+./gobastion-server
+```
+
+The server starts on `http://localhost:8080`
+
+### 2. Create an Admin User
+
+In a new terminal, use the registration endpoint or create directly via SQL:
+
+```bash
+# Option A: Via API (register then promote to admin)
+curl -X POST http://localhost:8080/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Admin User","email":"admin@example.com","password":"admin123","role":"admin"}'
+
+# Option B: Direct SQL (SQLite)
+sqlite3 app.db "INSERT INTO users (name, email, role, password_hash, is_active, is_staff, is_superuser) VALUES ('Admin', 'admin@example.com', 'admin', '\$2a\$10\$...', 1, 1, 1);"
+```
+
+**Default Test Credentials (for demo):**
+- Email: `admin@example.com`
+- Password: `admin123`
+
+*Note: Remember to change these in production!*
+
+### 3. Explore the Demo
+
+| URL | Description |
+|-----|-------------|
+| `http://localhost:8080/` | Beautiful landing page |
+| `http://localhost:8080/login` | Login page (use credentials above) |
+| `http://localhost:8080/register` | User registration |
+| `http://localhost:8080/admin` | Admin dashboard (requires login) |
+| `http://localhost:8080/admin/users` | User CRUD management |
+| `http://localhost:8080/docs` | Interactive API documentation (Swagger) |
+| `http://localhost:8080/api/v1/users` | REST API endpoints |
+
+### What You Get Out of the Box
+
+✅ **Complete Authentication Flow**
+- Login / Logout / Registration
+- JWT-based auth with HTTP-only cookies
+- Role-based access control (admin, user)
+
+✅ **Full Admin Panel**
+- User list with search and filters
+- Create new users
+- Edit user details and permissions
+- Delete users with confirmation
+
+✅ **Security Features**
+- CSRF protection on all forms
+- XSS prevention via auto-escaping
+- Rate limiting
+- Security headers (CSP, X-Frame-Options, etc.)
+
+✅ **Developer Experience**
+- Custom template engine with clean syntax
+- Query builder for database operations
+- Hot reload with Air (if configured)
+- Comprehensive error handling
 
 ## Project Generator CLI
 
@@ -80,14 +210,14 @@ Output values with automatic HTML escaping:
 Control flow using real Go code:
 
 ```html
-go:: if user != nil {
+go:: if user != nil
   <p>Welcome, @user.Name!</p>
 ::end
 
 go:: range .Items
-  <li>@.Name - $@.Price</li>
+  <li>@.Name - @.Price</li>
 ::end
-```text
+```
 
 ### Complete Example
 
@@ -132,6 +262,133 @@ go:: else
 For complete details on the template syntax, including advanced features, best practices, and security guidelines, see:
 
 📚 **[TEMPLATE_SYNTAX.md](TEMPLATE_SYNTAX.md)** - Complete template syntax reference
+
+## ⚙️ Configuration
+
+goBastion uses a centralized JSON configuration file at `config/config.json` that controls all major framework and application settings.
+
+### Configuration File Structure
+
+```json
+{
+  "app": {
+    "name": "goBastion",
+    "environment": "development",
+    "base_url": "http://localhost:8080",
+    "locale": "en-US",
+    "description": "Modern Go web framework"
+  },
+  "server": {
+    "host": "0.0.0.0",
+    "port": ":8080",
+    "read_timeout_seconds": 10,
+    "write_timeout_seconds": 10,
+    "idle_timeout_seconds": 60,
+    "allowed_origins": ["http://localhost:3000"]
+  },
+  "database": {
+    "driver": "sqlite3",
+    "dsn": "file:api.db?_foreign_keys=on",
+    "max_open_conns": 10,
+    "max_idle_conns": 5,
+    "conn_max_lifetime_minutes": 30
+  },
+  "security": {
+    "enable_csrf": true,
+    "csrf_cookie_name": "csrf_token",
+    "enable_jwt": true,
+    "jwt_secret": "change-me-in-prod",
+    "access_token_minutes": 15
+  },
+  "frontend": {
+    "theme": {
+      "primary_color": "indigo",
+      "secondary_color": "purple",
+      "dark_mode": false
+    }
+  },
+  "admin": {
+    "enable_dashboard_metrics": true,
+    "registration_open": true
+  },
+  "features": {
+    "enable_chat": true,
+    "enable_notifications": false
+  }
+}
+```
+
+### Configuration Sections
+
+| Section | Purpose | Safe to Modify |
+|---------|---------|----------------|
+| `app` | Application name, environment, branding | ✅ Yes |
+| `server` | HTTP server settings (port, timeouts) | ✅ Yes |
+| `database` | Database driver and connection settings | ✅ Yes |
+| `security` | CSRF, JWT, authentication settings | ⚠️ **Carefully** |
+| `frontend` | Theme colors, UI preferences | ✅ Yes |
+| `admin` | Admin panel feature flags | ✅ Yes |
+| `features` | Application feature flags | ✅ Yes |
+
+### Environment Variable Overrides
+
+The config system supports environment variable overrides:
+
+```bash
+export APP_PORT=":9000"
+export APP_DB_DRIVER="postgres"
+export APP_DB_DSN="postgres://user:pass@localhost/dbname"
+export APP_JWT_SECRET="your-secret-key"
+
+./gobastion-server  # Will use environment variables
+```
+
+### Using Config in Your Code
+
+**In handlers:**
+
+```go
+import "github.com/AlejandroMBJS/goBastion/internal/framework/config"
+
+// Access via loaded config
+cfg, _ := config.Load("config/config.json")
+appName := cfg.App.Name
+environment := cfg.App.Environment
+```
+
+**In templates:**
+
+Pass config values through handler data:
+
+```go
+data := map[string]any{
+    "Title": "My Page",
+    "AppName": fullConfig.App.Name,
+    "Environment": fullConfig.App.Environment,
+}
+views.Render(w, "template", data)
+```
+
+Then in your template:
+
+```html
+<title>@.AppName - @.Title</title>
+
+go:: if eq .Environment "development"
+  <div class="debug-banner">Development Mode</div>
+::end
+```
+
+### ⚠️ Security Configuration Warning
+
+**CRITICAL**: Always change these values in production:
+
+- `security.jwt_secret` - Use a strong, random secret (minimum 32 characters)
+- `app.environment` - Set to `"production"`
+- `database.dsn` - Use proper production credentials
+- `server.allowed_origins` - Whitelist only your actual domains
+
+**Never commit production secrets to Git!** Use environment variables for sensitive values in production.
 
 ## 🎨 Editor Support
 
@@ -436,7 +693,133 @@ goBastion/
 ├── TEMPLATE_SYNTAX.md           # Template syntax guide
 ├── REFACTOR_SUMMARY.md          # Refactor details
 └── index.html                   # Framework documentation
-```text
+```
+
+### 🎯 What to Modify (and What Not To)
+
+Understanding which files are safe to modify is crucial for extending goBastion without breaking core functionality.
+
+#### ✅ **SAFE TO MODIFY** - Application Layer
+
+These are the files you're **expected** to customize for your application:
+
+| Directory/File | Purpose | Modify Freely |
+|---------------|---------|---------------|
+| `templates/**/*.html` | Your HTML templates | ✅ Yes - Add your pages here |
+| `internal/app/models/` | Your data models | ✅ Yes - Define your domain models |
+| `internal/app/router/` | Your route handlers | ✅ Yes - Add your business logic |
+| `internal/app/chat/` | Example app feature | ✅ Yes - Customize or remove |
+| `static/` | Static assets (CSS, JS, images) | ✅ Yes - Add your assets |
+| `config/config.json` | Configuration | ✅ Yes - Configure your app |
+| `cmd/server/main.go` | Application entry point | ⚠️ **Carefully** - See below |
+
+**Example modifications you should make:**
+- Add new routes in `internal/app/router/`
+- Create new templates in `templates/`
+- Add your models in `internal/app/models/`
+- Customize styling in `static/css/`
+- Configure ports/database in `config/config.json`
+
+#### ⛔ **DO NOT MODIFY** - Framework Core
+
+These files contain battle-tested framework code. Modifying them can break security, performance, or core functionality:
+
+| Directory | Purpose | Modify? |
+|-----------|---------|---------|
+| `internal/framework/view/` | Template engine | ❌ **No** - Core template preprocessing |
+| `internal/framework/router/` | HTTP router | ❌ **No** - Request routing logic |
+| `internal/framework/middleware/` | HTTP middlewares | ❌ **No** - CSRF, auth, rate limiting |
+| `internal/framework/security/` | Security primitives | ❌ **No** - JWT, CSRF token generation |
+| `internal/framework/db/` | Database layer | ❌ **No** - Query builder, connections |
+| `internal/framework/config/` | Config management | ❌ **No** - Config loading & validation |
+| `internal/framework/admin/` | Admin panel core | ⚠️ **Rarely** - See extending section |
+
+**Why not modify these?**
+- They contain security-critical code (CSRF, JWT, XSS prevention)
+- They're shared infrastructure used throughout the framework
+- Breaking changes here affect the entire application
+- Updates and bug fixes are applied to these files
+
+#### 🔧 **MODIFY CAREFULLY** - Integration Points
+
+Some files bridge the framework and your application. Modify these with understanding:
+
+**`cmd/server/main.go`** - Application bootstrap
+- ✅ **DO**: Register your custom routes
+- ✅ **DO**: Add your middleware to the stack
+- ✅ **DO**: Initialize your services
+- ❌ **DON'T**: Remove framework initialization
+- ❌ **DON'T**: Change the server startup order
+- ❌ **DON'T**: Skip security middleware registration
+
+**Example safe modification in `main.go`:**
+```go
+// ✅ GOOD: Adding your custom routes
+router.RegisterAppRoutes(r, db)  // Existing framework routes
+registerMyCustomRoutes(r, db)     // Your new routes
+
+// ❌ BAD: Removing framework routes
+// router.RegisterAuthRoutes(r, cfg.Security, tmplEngine)  // Don't comment out!
+```
+
+### 🚀 Extending the Framework
+
+If you need to extend framework core functionality, prefer these approaches:
+
+1. **Configuration First**: Check if `config/config.json` supports your need
+2. **Middleware Pattern**: Add new middleware instead of modifying existing ones
+3. **Template Helpers**: Extend template functions via the view engine's function map
+4. **Custom Handlers**: Write new handlers in `internal/app/router/` that use framework utilities
+
+**Example: Adding a Custom Middleware**
+```go
+// ✅ GOOD: Create new middleware in your app code
+// File: internal/app/middleware/custom.go
+
+package middleware
+
+import "net/http"
+
+func MyCustomMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        // Your logic here
+        next.ServeHTTP(w, r)
+    })
+}
+
+// Then in main.go:
+r.Use(middleware.MyCustomMiddleware)
+```
+
+**Example: Adding Template Functions**
+```go
+// ✅ GOOD: Extend template functions without modifying view.go
+// In your handler or init code:
+
+funcMap := template.FuncMap{
+    "myCustomFunc": func(s string) string {
+        return strings.ToUpper(s)
+    },
+}
+
+// Register with view engine
+views.AddFunctions(funcMap)
+```
+
+### ⚠️ When You MUST Modify Framework Core
+
+In rare cases, you may need to modify framework code (e.g., customizing the template engine syntax). If you must:
+
+1. **Understand the implications** - Read all code comments in the file
+2. **Maintain security** - Never bypass CSRF, XSS prevention, or authentication
+3. **Document your changes** - Add comments explaining why you changed it
+4. **Consider contributing back** - If it's a general improvement, submit a PR
+5. **Test thoroughly** - Run all tests and verify security features still work
+
+**Files that might need careful extension:**
+- `internal/framework/view/view.go` - If you want custom template syntax
+- `internal/framework/admin/admin.go` - If you need admin panel customization
+- `internal/framework/middleware/` - If existing middlewares don't fit your needs
 
 ## 🚀 Quick Start
 
@@ -476,6 +859,299 @@ goBastion/
 - 🛠️ **CLI Tools**: Migrations, seeding, module generation
 - ⚡ **Live Reload**: Development server with automatic restart
 - ✅ **Well Tested**: Comprehensive test suite included
+
+## 🔒 Security Best Practices
+
+goBastion is built with security as a top priority. This section explains the security features and how to use them correctly.
+
+### Built-In Security Features
+
+#### 1. **CSRF Protection** (Cross-Site Request Forgery)
+
+CSRF protection is **enabled by default** and protects all form submissions.
+
+**How it works:**
+- Server generates a unique token per session
+- Token is stored in an HTTP-only cookie
+- Forms must include the token in a hidden field
+- Server validates token matches before processing POST/PUT/DELETE requests
+
+**Usage in templates:**
+```html
+<form method="POST" action="/admin/users">
+  go:: if .CSRFToken
+  <input type="hidden" name="csrf_token" value="@.CSRFToken">
+  ::end
+
+  <!-- Your form fields -->
+  <button type="submit">Submit</button>
+</form>
+```
+
+**Configuration:**
+```json
+{
+  "security": {
+    "enable_csrf": true,
+    "csrf_cookie_name": "csrf_token"
+  }
+}
+```
+
+**⚠️ CRITICAL:** Never disable CSRF protection in production!
+
+#### 2. **XSS Protection** (Cross-Site Scripting)
+
+The template engine **automatically HTML-escapes** all `@expr` outputs.
+
+**Safe by default:**
+```html
+<!-- User input is automatically escaped -->
+<p>Hello @.UserInput</p>
+
+<!-- If UserInput = "<script>alert('xss')</script>" -->
+<!-- Output: Hello &lt;script&gt;alert('xss')&lt;/script&gt; -->
+```
+
+**When you need raw HTML (dangerous!):**
+```go
+// In handler - sanitize first!
+import "html/template"
+
+data := map[string]any{
+    "SafeHTML": template.HTML(sanitizedContent),
+}
+```
+
+**Best practices:**
+- ✅ Always use `@expr` for user input
+- ✅ Sanitize HTML before marking as `template.HTML`
+- ❌ NEVER pass unsanitized user input as raw HTML
+- ❌ NEVER bypass template escaping for user input
+
+#### 3. **JWT Authentication**
+
+JWT (JSON Web Token) authentication provides secure, stateless authentication.
+
+**How it works:**
+- User logs in with email/password
+- Server generates JWT with claims (user ID, role, expiration)
+- JWT stored in HTTP-only cookie (not accessible to JavaScript)
+- Server validates JWT on protected routes
+
+**Protecting routes:**
+```go
+import "github.com/AlejandroMBJS/goBastion/internal/framework/middleware"
+
+// Require authentication
+authRequired := middleware.RequireAuth()
+r.Handle("GET", "/profile", authRequired(handleProfile))
+
+// Require specific role
+adminOnly := middleware.RequireRole("admin")
+r.Handle("GET", "/admin", adminOnly(handleAdmin))
+```
+
+**Configuration:**
+```json
+{
+  "security": {
+    "enable_jwt": true,
+    "jwt_secret": "CHANGE-THIS-IN-PRODUCTION",
+    "access_token_minutes": 15
+  }
+}
+```
+
+**⚠️ CRITICAL Security Settings:**
+- `jwt_secret`: **MUST** be changed in production
+- Use a strong, random secret (minimum 32 characters)
+- Never commit secrets to Git
+- Use environment variables: `export APP_JWT_SECRET="your-secret"`
+
+#### 4. **Rate Limiting**
+
+Rate limiting prevents brute force attacks and API abuse.
+
+**Configuration:**
+```json
+{
+  "rate_limit": {
+    "enabled": true,
+    "requests_per_minute": 60
+  }
+}
+```
+
+**How it works:**
+- Tracks requests per IP address
+- Returns `429 Too Many Requests` when limit exceeded
+- Resets every minute
+
+**Customization:**
+- Development: Set higher limits or disable
+- Production: Set conservative limits (60 req/min is reasonable)
+- APIs: Consider lower limits (30 req/min)
+
+#### 5. **SQL Injection Prevention**
+
+The database layer uses **prepared statements** by default.
+
+**Safe (parameterized queries):**
+```go
+// ✅ GOOD: Using query builder (safe)
+users, err := db.Query("SELECT * FROM users WHERE email = ?", email)
+
+// ✅ GOOD: Using named parameters
+result := db.QueryBuilder().
+    Select("*").
+    From("users").
+    Where("email = ?", email).
+    Execute()
+```
+
+**Dangerous (string concatenation):**
+```go
+// ❌ BAD: Never concatenate user input into SQL!
+query := "SELECT * FROM users WHERE email = '" + email + "'"
+// Vulnerable to: email = "' OR '1'='1"
+```
+
+**Best practices:**
+- ✅ Always use parameterized queries
+- ✅ Use the query builder for complex queries
+- ❌ NEVER concatenate user input into SQL strings
+
+#### 6. **Password Security**
+
+User passwords are hashed with **bcrypt** (industry standard).
+
+**Best practices:**
+- ✅ Passwords hashed with bcrypt (cost factor 10)
+- ✅ Never store plain-text passwords
+- ✅ Never log passwords
+- ✅ Enforce minimum password length (8+ characters)
+
+**In your handlers:**
+```go
+import "golang.org/x/crypto/bcrypt"
+
+// Hashing passwords
+passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+
+// Verifying passwords
+err := bcrypt.CompareHashAndPassword([]byte(storedHash), []byte(password))
+if err != nil {
+    // Password incorrect
+}
+```
+
+### Production Security Checklist
+
+Before deploying to production, verify these critical settings:
+
+#### ⚠️ Must Change:
+- [ ] `security.jwt_secret` - Set to strong random value (32+ chars)
+- [ ] `app.environment` - Set to `"production"`
+- [ ] `database.dsn` - Use production credentials, not defaults
+- [ ] Default admin password - Change immediately after first login
+
+#### ⚠️ Must Enable:
+- [ ] HTTPS/TLS - Use reverse proxy (nginx, Caddy) with SSL certificate
+- [ ] `security.enable_csrf` - Keep enabled (`true`)
+- [ ] `security.enable_jwt` - Keep enabled (`true`)
+- [ ] `rate_limit.enabled` - Keep enabled (`true`)
+
+#### ⚠️ Must Secure:
+- [ ] Environment variables - Use secrets management (not in code)
+- [ ] Database credentials - Use environment variables or secrets
+- [ ] File permissions - Restrict `config/config.json` access
+- [ ] CORS origins - Whitelist only your actual domains in `server.allowed_origins`
+
+#### ⚠️ Recommended:
+- [ ] Set up database backups
+- [ ] Enable request logging for security auditing
+- [ ] Use a Web Application Firewall (WAF)
+- [ ] Implement monitoring and alerting
+- [ ] Regular security updates for dependencies
+
+### Environment Variables for Secrets
+
+**Never commit secrets to Git!** Use environment variables:
+
+```bash
+# Production environment variables
+export APP_ENVIRONMENT="production"
+export APP_JWT_SECRET="your-super-secret-key-min-32-chars"
+export APP_DB_DSN="postgres://user:pass@prod-db:5432/myapp"
+export APP_PORT=":8080"
+
+# Start server (reads environment variables)
+./gobastion-server
+```
+
+**In CI/CD pipelines:**
+- Use secrets management (GitHub Secrets, AWS Secrets Manager, etc.)
+- Never log secrets in build output
+- Rotate secrets regularly
+
+### Common Security Mistakes to Avoid
+
+#### ❌ DON'T: Disable CSRF protection
+```json
+{
+  "security": {
+    "enable_csrf": false  // ❌ DON'T DO THIS IN PRODUCTION!
+  }
+}
+```
+
+#### ❌ DON'T: Use weak JWT secrets
+```json
+{
+  "security": {
+    "jwt_secret": "secret"  // ❌ TOO SHORT! Use 32+ characters
+  }
+}
+```
+
+#### ❌ DON'T: Bypass template escaping for user input
+```go
+// ❌ BAD: XSS vulnerability!
+data := map[string]any{
+    "UserComment": template.HTML(userInput),  // Dangerous!
+}
+```
+
+#### ❌ DON'T: Commit secrets to Git
+```bash
+# ❌ BAD: Secret visible in Git history
+git add config/config.json  # Contains JWT secret
+git commit -m "Add config"
+```
+
+#### ❌ DON'T: Skip authentication middleware
+```go
+// ❌ BAD: Admin route without authentication!
+r.Handle("GET", "/admin", handleAdmin)  // Anyone can access!
+
+// ✅ GOOD: Require admin role
+adminAuth := middleware.RequireRole("admin")
+r.Handle("GET", "/admin", adminAuth(handleAdmin))
+```
+
+### Security Resources
+
+- **OWASP Top 10**: https://owasp.org/Top10/
+- **Go Security**: https://go.dev/doc/security/
+- **bcrypt Guide**: https://github.com/golang/crypto/tree/master/bcrypt
+- **JWT Best Practices**: https://tools.ietf.org/html/rfc8725
+
+### Reporting Security Issues
+
+If you discover a security vulnerability, please email the maintainers directly instead of opening a public issue.
+
+---
 
 ## 🤝 Contributing
 
@@ -915,4 +1591,146 @@ Make sure you're passing the correct data to the template.
 - Backward compatible with old PHP-style tags
 
 Happy templating! 🎨
+
+---
+
+## 📚 Documentation & Code Comments Summary
+
+This README and codebase have been enhanced with comprehensive documentation to help developers understand what they can safely modify and what they should avoid touching. Here's what was added:
+
+### README Enhancements
+
+#### 1. **Philosophy & Architecture** Section
+- Explains goBastion's design principles (security by default, convention over configuration, DX-first)
+- Shows clear separation between framework core (`internal/framework/`) and application layer (`internal/app/`)
+- Illustrates how the template engine preprocesses syntax
+- **Location**: After "What's New" section
+
+#### 2. **Configuration** Section
+- Documents the centralized `config/config.json` structure
+- Explains all configuration sections (app, server, database, security, frontend, admin, features)
+- Shows how to use config in handlers and templates
+- Provides security warnings for production settings
+- **Location**: After "Template Engine" section
+
+#### 3. **Project Structure & What to Modify** Section
+- **✅ SAFE TO MODIFY**: Lists application layer files developers should customize
+- **⛔ DO NOT MODIFY**: Lists framework core files that should rarely be touched
+- **🔧 MODIFY CAREFULLY**: Explains integration points like `main.go`
+- Provides concrete examples of safe vs. unsafe modifications
+- **Location**: Expanded existing "Project Structure" section
+
+#### 4. **Extending the Framework** Subsection
+- Shows how to add custom middleware
+- Shows how to add custom template functions
+- Explains when and how to modify framework core (rare cases)
+- **Location**: Within "Project Structure" section
+
+### Code Comment Enhancements
+
+#### 1. **view.go** - Template Engine Core
+```go
+// ⚠️ FRAMEWORK CORE - DO NOT MODIFY
+//
+// WHEN TO MODIFY:
+//   - ❌ NEVER modify for application changes
+//   - ❌ DO NOT bypass preprocessing (security risk)
+//   - ✅ OK to extend via AddFunctions()
+```
+- **Added**: Comprehensive package header explaining security implications
+- **Added**: Detailed function comments for `NewEngine()` and `Render()`
+- **Added**: Usage examples and extension points
+- **Added**: Template syntax rules and security notes
+
+#### 2. **config.go** - Configuration Management
+```go
+// ⚠️ FRAMEWORK CORE - MODIFY CAREFULLY
+//
+// WHEN TO MODIFY:
+//   - ✅ ADD new configuration fields
+//   - ❌ DO NOT remove existing fields (breaking)
+//   - ❌ DO NOT change JSON field names
+```
+- **Added**: Package header explaining configuration flow
+- **Added**: Guidelines on extending configuration safely
+- **Added**: Step-by-step instructions for adding new config sections
+- **Added**: Examples of proper config usage
+
+#### 3. **main.go** - Application Entry Point
+```go
+// ⚠️ APPLICATION LAYER - MODIFY CAREFULLY
+//
+// INITIALIZATION ORDER (CRITICAL):
+//  1. Load configuration
+//  2. Initialize database
+//  3. Initialize template engine
+//  ...
+```
+- **Added**: Comprehensive bootstrap documentation
+- **Added**: Critical initialization order explanation
+- **Added**: Safe customization examples (routes, middleware, services)
+- **Added**: Clear DO/DON'T guidelines for modifications
+
+### Key Documentation Principles Applied
+
+1. **Clear Visual Markers**
+   - ⚠️ Warnings for critical sections
+   - ✅ Green checkmarks for safe operations
+   - ❌ Red X for forbidden operations
+   - 🔧 Wrench for "modify carefully" areas
+
+2. **Explicit "Touch/Don't Touch" Guidance**
+   - Every major file/package clearly labeled as framework core or app layer
+   - Specific examples of what to modify and what not to modify
+   - Explanations of why certain files shouldn't be modified
+
+3. **Security-First Documentation**
+   - Security warnings in configuration section
+   - XSS/CSRF protection explained in template engine
+   - JWT secret and production environment warnings
+
+4. **Practical Examples**
+   - Code examples show the RIGHT way to extend functionality
+   - BAD examples marked with ❌ to show what NOT to do
+   - Real-world use cases (adding routes, middleware, config)
+
+### Where to Find Documentation
+
+- **README.md**: Complete framework overview, quickstart, configuration, project structure
+- **TEMPLATE_SYNTAX.md**: Detailed template syntax reference
+- **Code Comments**: In-file documentation for all framework core files
+- **index.html**: Framework documentation website (see root directory)
+- **config/config.json**: Configuration file with inline comments
+
+### Documentation Best Practices Used
+
+✅ **Preservation**: All existing content preserved and enhanced, not replaced
+✅ **Clarity**: Clear, professional language similar to Django/FastAPI/Next.js docs
+✅ **Actionable**: Specific examples and instructions, not just theory
+✅ **Security-Conscious**: Warnings about security-critical code
+✅ **Developer Experience**: Helps developers succeed without breaking things
+
+### Next Steps for Developers
+
+1. **Read** the "Philosophy & Architecture" section to understand the framework
+2. **Review** the "Project Structure & What to Modify" section to know where to work
+3. **Check** the "Configuration" section to customize your application
+4. **Explore** code comments in `view.go`, `config.go`, and `main.go` for deep understanding
+5. **Follow** the "Extending the Framework" examples when adding new features
+
+**Remember**: When in doubt, check the comments in the file you're modifying. Every critical file now has clear guidance on when and how to modify it safely.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! When contributing:
+
+1. **Preserve existing functionality** - Don't delete features
+2. **Follow the documentation patterns** - Use ✅/❌/⚠️ markers consistently
+3. **Add comments for new code** - Especially "touch/don't touch" guidance
+4. **Test thoroughly** - Run tests and verify security features still work
+5. **Update README** - Document new features in appropriate sections
+
+Please feel free to submit a Pull Request with improvements to code or documentation!
 

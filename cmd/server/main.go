@@ -1,3 +1,80 @@
+// Package main is the application entry point for goBastion server.
+//
+// ⚠️ APPLICATION LAYER - MODIFY CAREFULLY
+//
+// This file bootstraps the goBastion application by:
+//   - Loading configuration from config/config.json
+//   - Initializing database connection
+//   - Setting up template engine
+//   - Registering middleware (CSRF, JWT, rate limiting)
+//   - Registering routes (app, auth, admin, API docs)
+//   - Starting the HTTP server with graceful shutdown
+//
+// WHEN TO MODIFY:
+//   - ✅ ADD your custom route registration after framework routes
+//   - ✅ ADD your custom middleware to the middleware stack
+//   - ✅ ADD your custom service initialization (email, cache, etc.)
+//   - ✅ MODIFY server behavior via config/config.json (preferred)
+//   - ⚠️  MODIFY the initialization order carefully (order matters!)
+//   - ❌ DO NOT remove framework route registration (breaks core features)
+//   - ❌ DO NOT remove security middleware (CSRF, JWT, rate limiting)
+//   - ❌ DO NOT skip database or template engine initialization
+//
+// INITIALIZATION ORDER (CRITICAL):
+//  1. Load configuration (config.Load)
+//  2. Initialize database (db.InitDB)
+//  3. Initialize template engine (view.NewEngine)
+//  4. Create router (frameworkrouter.NewRouter)
+//  5. Register GLOBAL middleware (rate limiting, CSRF)
+//  6. Register HOME route
+//  7. Register APP routes (your application logic)
+//  8. Register AUTH routes (login, register, JWT)
+//  9. Register ADMIN routes (user management, dashboard)
+//  10. Register DOCS routes (OpenAPI/Swagger)
+//  11. Register STATIC file serving
+//  12. Start HTTP server with graceful shutdown
+//
+// Changing this order can break functionality or create security vulnerabilities!
+//
+// SAFE CUSTOMIZATIONS:
+//
+// 1. Add your custom routes after framework routes:
+//
+//	// Framework routes (DO NOT REMOVE)
+//	router.RegisterAuthRoutes(r, cfg.Security, tmplEngine)
+//	admin.RegisterRoutes(r, tmplEngine, cfg.Security)
+//
+//	// Your custom routes (ADD HERE)
+//	registerMyAppRoutes(r, tmplEngine, cfg)
+//
+// 2. Add custom global middleware:
+//
+//	// Framework middleware (DO NOT REMOVE)
+//	r.Use(middleware.RateLimit(cfg.RateLimit))
+//	r.Use(middleware.CSRF(cfg.Security))
+//
+//	// Your custom middleware (ADD HERE)
+//	r.Use(myLoggingMiddleware)
+//	r.Use(myMetricsMiddleware)
+//
+// 3. Initialize your services before route registration:
+//
+//	// After template engine initialization
+//	emailService := email.NewService(cfg.Email)
+//	cacheService := cache.NewRedisCache(cfg.Cache)
+//
+//	// Pass to your routes
+//	registerMyAppRoutes(r, tmplEngine, emailService, cacheService)
+//
+// 4. Modify server configuration via config.json:
+//	{
+//	  "server": {
+//	    "port": ":9000",
+//	    "read_timeout_seconds": 30
+//	  }
+//	}
+//
+// For more examples and best practices, see: README.md "Extending the Framework"
 package main
 
 import (
@@ -45,7 +122,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to initialize template engine: %v", err)
 	}
+	tmplEngine.SetVerbose(cfg.Logging.Verbose)
 	log.Println("Template engine initialized successfully")
+	if cfg.Logging.Verbose {
+		log.Println("  - Verbose template debugging: ENABLED")
+	}
 
 	// Create router
 	r := frameworkrouter.New()
@@ -89,7 +170,8 @@ func main() {
 
 	// Register admin routes
 	log.Println("Registering admin routes...")
-	admin.RegisterRoutes(r, tmplEngine)
+	admin.SetFullConfig(&cfg) // Pass full config for metrics
+	admin.RegisterRoutes(r, tmplEngine, cfg.Security)
 
 	// Initialize and register chat routes (advanced example with SSE + HTMX)
 	log.Println("Initializing chat broker...")
